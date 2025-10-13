@@ -30,7 +30,7 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <Link href="/login">Login</Link>
+          <Link href="/auth/login">Login</Link>
         </div>
       </div>
     </nav>
