@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-// import { useCartStore } from "../stores/useCartStore";
+import { useCartStore } from "../stores/useCartStore";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
