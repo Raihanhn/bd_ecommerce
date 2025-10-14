@@ -1,3 +1,6 @@
+//Your ProtectedRoute component ensures that only authenticated users can access
+//  certain pages by redirecting unauthenticated users to the login page.
+
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect } from "react";

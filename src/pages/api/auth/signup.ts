@@ -28,6 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       name,
       email,
       password: hashedPassword,
+      image: "/default-avatar.png", 
       role: "user", // optional default role
     });
 

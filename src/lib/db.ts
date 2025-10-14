@@ -1,3 +1,6 @@
+//db.ts efficiently connects your app to MongoDB using Mongoose, with caching to prevent multiple connections.
+
+
 import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
