@@ -1,6 +1,3 @@
-// Configures NextAuth for Google OAuth and email/password login with MongoDB integration.
-// Handles user creation, validation, and secure JWT-based session management.
-
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -10,13 +7,13 @@ import User from "../models/User";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    // 🔹 Google OAuth provider
+    // Google login
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientId: process.env.GOOGLE_CLIENT_ID!, 
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
 
-    // 🔹 Email & Password login
+    // Email/password login
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -24,29 +21,32 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        await dbConnect();
+        if (!credentials?.email || !credentials?.password)
+          throw new Error("Missing credentials");
 
-        const user = await User.findOne({ email: credentials?.email });
+        await dbConnect();
+        const user = await User.findOne({ email: credentials.email });
         if (!user) throw new Error("No user found");
 
-        const valid = await bcrypt.compare(credentials!.password!, user.password);
-        if (!valid) throw new Error("Invalid credentials");
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isValid) throw new Error("Invalid credentials");
 
-        return user;
+        return {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role || "user",
+        };
       },
     }),
   ],
 
-  // 🔹 Custom sign-in page
   pages: { signIn: "/auth/login" },
 
-  // 🔹 Callbacks for custom logic
   callbacks: {
-    // 🧠 Runs whenever a user signs in (any provider)
     async signIn({ user, account }) {
       await dbConnect();
 
-      // If Google login, create user in DB if not exists
       if (account?.provider === "google") {
         const existingUser = await User.findOne({ email: user.email });
         if (!existingUser) {
@@ -61,16 +61,29 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
 
-    // 🧠 Controls what data is stored in the session
+    // ✅ Make sure JWT always carries `role`
+    async jwt({ token, user }) {
+      await dbConnect();
+
+      if (user) {
+        const dbUser = await User.findOne({ email: user.email });
+        token.id = dbUser?._id.toString() || user.id;
+        token.role = dbUser?.role || (user as any).role || "user";
+      }
+
+      return token;
+    },
+
+    // ✅ Make sure session includes the correct role
     async session({ session, token }) {
-      if (token.sub) (session as any).userId = token.sub;
+      if (token) {
+        (session.user as any).id = token.id;
+        (session.user as any).role = token.role;
+      }
       return session;
     },
   },
 
-  // 🔹 Use JWT-based sessions (no database session storage)
   session: { strategy: "jwt" },
-
-  // 🔹 Secret for token encryption
   secret: process.env.NEXTAUTH_SECRET!,
 };
