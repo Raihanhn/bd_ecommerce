@@ -12,7 +12,7 @@
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
     "formidable": "^3.5.4",
-    "mongoose": "^8.19.1",
+    "mongoose": "^7.6.3",
     "next": "15.5.4",
     "next-auth": "^4.24.11",
     "react": "19.1.0",
