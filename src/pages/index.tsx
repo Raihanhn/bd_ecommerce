@@ -8,11 +8,12 @@ export default function Home() {
       {/* ===== Hero Section ===== */}
       <main className="flex flex-col items-center justify-center flex-grow py-20">
         <Image
-          src="/logo.png"
+          src="/logo2.gif"
           alt="E-Commerce Logo"
-          width={120}
-          height={120}
-          className="mb-8 drop-shadow-lg"
+          width={150}
+          height={150}
+          className="mb-8 drop-shadow-lg "
+           unoptimized
         />
 
         <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
