@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export default function Home() {
+export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-between bg-gradient-to-b from-white via-blue-50 to-gray-50 text-center px-6">
       {/* ===== Hero Section ===== */}
