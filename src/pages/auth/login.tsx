@@ -24,7 +24,7 @@ export default function LoginPage() {
     });
 
     if (res?.error) setError("Invalid credentials");
-    else router.push("/");
+    else router.push("/home");
     setLoading(false);
   };
 
@@ -70,7 +70,7 @@ export default function LoginPage() {
           type="button"
           onClick={() =>
             signIn("google", {
-              callbackUrl: "/",
+              callbackUrl: "/home",
             })
           }
           className="w-full flex items-center justify-center gap-2 border rounded-lg py-2 mt-4 hover:bg-gray-100 transition"
