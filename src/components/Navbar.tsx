@@ -54,13 +54,13 @@ export default function Navbar() {
         </div>
 
         {/* Logo */}
-        <Link href="/" className="font-bold text-xl">
+        <Link href="/home" className="font-bold text-xl">
           ShopifyPro
         </Link>
 
         {/* Navbar links (desktop) */}
         <div className="hidden lg:flex items-center gap-4">
-          <Link href="/">Home</Link>
+          <Link href="/home">Home</Link>
           <Link href="/about">About</Link>
           <Link href="/cart" className="relative">
             🛒
@@ -138,7 +138,7 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-t border-gray-200 shadow-md">
           <div className="flex flex-col p-4 gap-2">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/home" onClick={() => setMobileMenuOpen(false)}>
               Home
             </Link>
             <Link href="/about" onClick={() => setMobileMenuOpen(false)}>

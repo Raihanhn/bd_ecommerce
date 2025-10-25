@@ -1,8 +1,20 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
+  const [loadingButton, setLoadingButton] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleClick = (path: string) => {
+    setLoadingButton(path);
+    setTimeout(() => {
+      router.push(path);
+    }, 1000);
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-between bg-gradient-to-b from-white via-blue-50 to-gray-50 text-center px-6">
       {/* ===== Hero Section ===== */}
@@ -13,21 +25,18 @@ export default function LandingPage() {
           width={150}
           height={150}
           className="mb-8 drop-shadow-lg "
-           unoptimized
+          unoptimized
         />
 
         <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
-          Welcome to{" "}
-          <span className="text-blue-600">ShopVerse</span> — <br />
+          Welcome to <span className="text-blue-600">ShopVerse</span> — <br />
           The Future of Online Shopping
         </h1>
 
         <p className="text-gray-600 max-w-2xl text-lg mb-8 leading-relaxed">
           Experience a next-generation eCommerce platform where shopping meets
           simplicity. Enjoy{" "}
-          <span className="font-semibold text-blue-600">
-            Cash on Delivery
-          </span>{" "}
+          <span className="font-semibold text-blue-600">Cash on Delivery</span>{" "}
           or secure online payments through{" "}
           <span className="font-semibold text-orange-500">
             bKash, Rocket, Nagad, and Bank Transfers
@@ -36,18 +45,29 @@ export default function LandingPage() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <Link
-            href="/auth/register"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition transform hover:-translate-y-0.5"
+          <button
+            onClick={() => handleClick("/auth/signup")}
+            disabled={loadingButton === "/auth/signup"}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition transform hover:-translate-y-0.5 flex items-center justify-center"
           >
-            Get Started
-          </Link>
-          <Link
-            href="/auth/login"
-            className="border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-3 px-8 rounded-lg transition transform hover:-translate-y-0.5"
+            {loadingButton === "/auth/signup" ? (
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+              "Get Started"
+            )}
+          </button>
+
+          <button
+            onClick={() => handleClick("/auth/login")}
+            disabled={loadingButton === "/auth/login"}
+            className="border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-3 px-8 rounded-lg transition transform hover:-translate-y-0.5 flex items-center justify-center"
           >
-            Sign In
-          </Link>
+            {loadingButton === "/auth/login" ? (
+              <span className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+              "Sign In"
+            )}
+          </button>
         </div>
       </main>
 
@@ -91,14 +111,21 @@ export default function LandingPage() {
           Ready to Start Your Shopping Journey?
         </h2>
         <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
-          Join thousands of smart shoppers today and explore an online store that
-          puts you first.
+          Join thousands of smart shoppers today and explore an online store
+          that puts you first.
         </p>
-        <Link
-          href="/auth/register"
-          className="bg-white text-blue-600 font-semibold py-3 px-10 rounded-lg shadow-md hover:bg-gray-100 transition"
-        >
-          Create an Account
+        <Link href="/auth/signup" passHref>
+          <button
+            onClick={() => handleClick("/auth/signup")}
+            disabled={loadingButton === "/auth/signup"}
+            className="bg-white text-blue-600 font-semibold py-3 px-10 rounded-lg shadow-md hover:bg-gray-100 transition flex items-center justify-center mx-auto"
+          >
+            {loadingButton === "/auth/signup" ? (
+              <span className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+              "Create an Account"
+            )}
+          </button>
         </Link>
       </section>
 
