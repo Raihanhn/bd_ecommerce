@@ -29,14 +29,33 @@ export default function LandingPage() {
         />
 
         <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
-          Welcome to <span className="text-blue-600">ShopVerse</span> — <br />
-          The Future of Online Shopping
+          <span className="bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text font-bold">
+            Welcome
+          </span>{" "}
+          to{" "}
+          <span className="bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 inline-block text-transparent bg-clip-text font-bold">
+            ShopVerse
+          </span>{" "}
+          — <br />
+          The{" "}
+          <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 inline-block text-transparent bg-clip-text font-bold">
+            Future
+          </span>{" "}
+          of{" "}
+          <span className="bg-gradient-to-r from-lime-400 via-yellow-400 to-orange-400 inline-block text-transparent bg-clip-text font-bold">
+            Online
+          </span>{" "}
+          <span className="bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500  text-transparent bg-clip-text font-bold">
+            Shopping
+          </span>
         </h1>
 
         <p className="text-gray-600 max-w-2xl text-lg mb-8 leading-relaxed">
           Experience a next-generation eCommerce platform where shopping meets
           simplicity. Enjoy{" "}
-          <span className="font-semibold text-blue-600">Cash on Delivery</span>{" "}
+          <span className="font-semibold bg-gradient-to-r from-[#FCD34D] via-[#0284C7] to-[#E11D48] text-transparent bg-clip-text">
+            Cash on Delivery
+          </span>{" "}
           or secure online payments through{" "}
           <span className="font-semibold text-orange-500">
             bKash, Rocket, Nagad, and Bank Transfers
