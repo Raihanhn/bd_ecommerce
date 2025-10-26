@@ -51,16 +51,35 @@ export default function LandingPage() {
         </h1>
 
         <p className="text-gray-600 max-w-2xl text-lg mb-8 leading-relaxed">
-          Experience a next-generation eCommerce platform where shopping meets
-          simplicity. Enjoy{" "}
+          Experience a{" "}
+          <span className="font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 text-transparent bg-clip-text">
+            next-generation
+          </span>{" "}
+          eCommerce platform where{" "}
+          <span className="font-semibold bg-gradient-to-r from-sky-400 via-teal-400 to-green-400 text-transparent bg-clip-text">
+            shopping
+          </span>{" "}
+          meets simplicity. Enjoy{" "}
           <span className="font-semibold bg-gradient-to-r from-[#FCD34D] via-[#0284C7] to-[#E11D48] text-transparent bg-clip-text">
             Cash on Delivery
           </span>{" "}
           or secure online payments through{" "}
-          <span className="font-semibold text-orange-500">
+          <span className="font-semibold bg-gradient-to-r from-pink-500 via-rose-400 to-orange-400 text-transparent bg-clip-text">
             bKash, Rocket, Nagad, and Bank Transfers
           </span>
-          . Fast, safe, and built for your lifestyle.
+          .{" "}
+          <span className="font-semibold bg-gradient-to-r from-emerald-400 via-blue-400 to-cyan-400 text-transparent bg-clip-text">
+            Fast
+          </span>
+          ,{" "}
+          <span className="font-semibold bg-gradient-to-r from-violet-500 via-fuchsia-400 to-pink-400 text-transparent bg-clip-text">
+            safe
+          </span>
+          , and built for your{" "}
+          <span className="font-semibold bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 text-transparent bg-clip-text">
+            lifestyle
+          </span>
+          .
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4">
