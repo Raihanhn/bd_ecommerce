@@ -16,19 +16,22 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between bg-gradient-to-b from-white via-blue-50 to-gray-50 text-center px-6">
+    <div className="min-h-screen flex flex-col items-center justify-between bg-gradient-to-b from-[#F0F9FF] via-[#E0F2FE] to-[#FDFCFB] text-center px-6 relative overflow-hidden">
+      {/* Subtle background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-[#c3f8ff]/30 via-[#d0f0ff]/20 to-[#fff]/10 blur-2xl -z-10" />
+
       {/* ===== Hero Section ===== */}
       <main className="flex flex-col items-center justify-center flex-grow py-20">
         <Image
           src="/logo2.gif"
-          alt="E-Commerce Logo"
-          width={150}
-          height={150}
-          className="mb-8 drop-shadow-lg "
+          alt="ShopVerse Logo"
+          width={160}
+          height={160}
+          className="mb-8 drop-shadow-2xl"
           unoptimized
         />
 
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
           <span className="bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text font-bold">
             Welcome
           </span>{" "}
@@ -45,12 +48,12 @@ export default function LandingPage() {
           <span className="bg-gradient-to-r from-lime-400 via-yellow-400 to-orange-400 inline-block text-transparent bg-clip-text font-bold">
             Online
           </span>{" "}
-          <span className="bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500  text-transparent bg-clip-text font-bold">
+          <span className="bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 text-transparent bg-clip-text font-bold">
             Shopping
           </span>
         </h1>
 
-        <p className="text-gray-600 max-w-2xl text-lg mb-8 leading-relaxed">
+        <p className="text-gray-600 max-w-2xl text-lg mb-10 leading-relaxed">
           Experience a{" "}
           <span className="font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 text-transparent bg-clip-text">
             next-generation
@@ -59,53 +62,31 @@ export default function LandingPage() {
           <span className="font-semibold bg-gradient-to-r from-sky-400 via-teal-400 to-green-400 text-transparent bg-clip-text">
             shopping
           </span>{" "}
-          meets simplicity. Enjoy{" "}
-          <span className="font-semibold bg-gradient-to-r from-[#FCD34D] via-[#0284C7] to-[#E11D48] text-transparent bg-clip-text">
-            Cash on Delivery
-          </span>{" "}
-          or secure online payments through{" "}
-          <span className="font-semibold bg-gradient-to-r from-pink-500 via-rose-400 to-orange-400 text-transparent bg-clip-text">
-            bKash, Rocket, Nagad, and Bank Transfers
-          </span>
-          .{" "}
-          <span className="font-semibold bg-gradient-to-r from-emerald-400 via-blue-400 to-cyan-400 text-transparent bg-clip-text">
-            Fast
-          </span>
-          ,{" "}
-          <span className="font-semibold bg-gradient-to-r from-violet-500 via-fuchsia-400 to-pink-400 text-transparent bg-clip-text">
-            safe
-          </span>
-          , and built for your{" "}
-          <span className="font-semibold bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 text-transparent bg-clip-text">
-            lifestyle
-          </span>
-          .
+          meets simplicity.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-5">
+          {/* Gradient Get Started Button */}
           <button
             onClick={() => handleClick("/auth/signup")}
             disabled={loadingButton === "/auth/signup"}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition transform hover:-translate-y-0.5 flex items-center justify-center"
+            className="relative bg-gradient-to-r from-blue-500 via-cyan-400 to-teal-400 text-white font-semibold py-3 px-10 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:ring-4 focus:ring-cyan-300 flex items-center justify-center gap-2"
           >
-            {loadingButton === "/auth/signup" ? (
-              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-            ) : (
-              "Get Started"
+            {loadingButton === "/auth/signup" && (
+              <span className="absolute inset-0 flex items-center justify-center">
+                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              </span>
             )}
+            <span
+              className={`${
+                loadingButton === "/auth/signup" ? "opacity-60" : "opacity-100"
+              } transition`}
+            >
+              Get Started
+            </span>
           </button>
 
-          <button
-            onClick={() => handleClick("/auth/login")}
-            disabled={loadingButton === "/auth/login"}
-            className="border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-3 px-8 rounded-lg transition transform hover:-translate-y-0.5 flex items-center justify-center"
-          >
-            {loadingButton === "/auth/login" ? (
-              <span className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></span>
-            ) : (
-              "Sign In"
-            )}
-          </button>
+        
         </div>
       </main>
 
@@ -119,7 +100,7 @@ export default function LandingPage() {
         <FeatureCard
           icon="💳"
           title="Secure Payments"
-          desc="Choose from Cash on Delivery, bKash, Rocket, Nagad, or direct bank transfers — all SSL protected."
+          desc="Choose from COD, bKash, Rocket, Nagad, or direct bank transfers — all SSL protected."
         />
         <FeatureCard
           icon="🚚"
@@ -144,28 +125,44 @@ export default function LandingPage() {
       </section>
 
       {/* ===== CTA Section ===== */}
-      <section className="text-center py-16 bg-gradient-to-r from-blue-600 to-blue-500 text-white w-full">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-          Ready to Start Your Shopping Journey?
-        </h2>
-        <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
-          Join thousands of smart shoppers today and explore an online store
-          that puts you first.
-        </p>
-        <Link href="/auth/signup" passHref>
-          <button
-            onClick={() => handleClick("/auth/signup")}
-            disabled={loadingButton === "/auth/signup"}
-            className="bg-white text-blue-600 font-semibold py-3 px-10 rounded-lg shadow-md hover:bg-gray-100 transition flex items-center justify-center mx-auto"
-          >
-            {loadingButton === "/auth/signup" ? (
-              <span className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></span>
-            ) : (
-              "Create an Account"
-            )}
-          </button>
-        </Link>
-      </section>
+      <section className="text-center py-20 w-full px-4">
+  <div className="relative bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 text-white rounded-3xl shadow-xl py-14 px-6 sm:px-12 overflow-hidden flex flex-col items-center">
+    {/* soft glow effect */}
+    <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-400 opacity-20 blur-2xl"></div>
+
+    <h2 className="text-3xl sm:text-4xl font-bold mb-4 relative z-10">
+      Ready to Start Your Shopping Journey?
+    </h2>
+
+    <p className="text-blue-100 mb-8 max-w-2xl mx-auto relative z-10">
+      Join thousands of smart shoppers today and explore an online store
+      that puts you first.
+    </p>
+
+    {/* ===== Centered Button ===== */}
+    <div className="relative z-10 flex justify-center">
+      <button
+        onClick={() => handleClick("/auth/signup")}
+        disabled={loadingButton === "/auth/signup"}
+        className="relative bg-white text-blue-700 font-semibold py-3 px-10 rounded-full shadow-md hover:bg-gradient-to-r hover:from-white hover:to-blue-100 transition-all duration-300 hover:scale-105 focus:ring-4 focus:ring-blue-300 flex items-center justify-center gap-2"
+      >
+        {loadingButton === "/auth/signup" && (
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="w-5 h-5 border-2 border-blue-700 border-t-transparent rounded-full animate-spin"></span>
+          </span>
+        )}
+        <span
+          className={`${
+            loadingButton === "/auth/signup" ? "opacity-60" : "opacity-100"
+          } transition`}
+        >
+          Create an Account
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
 
       {/* ===== Footer ===== */}
       <footer className="text-sm text-gray-500 py-6">
@@ -185,7 +182,7 @@ function FeatureCard({
   desc: string;
 }) {
   return (
-    <div className="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 border border-gray-100">
+    <div className="p-6 bg-white/80 backdrop-blur-md rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
       <div className="text-4xl mb-3">{icon}</div>
       <h3 className="text-lg font-semibold text-gray-800 mb-2">{title}</h3>
       <p className="text-gray-600 text-sm leading-relaxed">{desc}</p>
