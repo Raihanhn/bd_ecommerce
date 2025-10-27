@@ -1,20 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useSession } from "next-auth/react"; 
+import { useSession } from "next-auth/react";
 import axios from "axios";
+import { Pencil, Save, X } from "lucide-react";
 
 type UserType = {
   name: string;
   email: string;
   mobile: string;
-  address: string;
-  image: string | File;  
+  address: string; 
+  image: string | File;
 };
 
 export default function ProfilePage() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState<UserType>({
     name: "",
     email: "",
@@ -66,6 +68,7 @@ export default function ProfilePage() {
       });
 
       alert("Profile updated successfully!");
+      setIsEditing(false);
     } catch (err) {
       console.error(err);
       alert("Failed to update profile.");
@@ -75,75 +78,138 @@ export default function ProfilePage() {
   if (loading) return <div className="text-center py-20">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-10">
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">My Profile</h1>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col items-center py-10">
+      <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md relative transition-all duration-300">
+        {/* Edit / Save Buttons */}
+        <div className="absolute top-6 right-6 flex gap-2">
+          {isEditing ? (
+            <>
+              <button
+                onClick={handleSave}
+                className="p-2 bg-green-600 text-white rounded-full hover:bg-green-700"
+                title="Save"
+              >
+                <Save size={18} />
+              </button>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="p-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400"
+                title="Cancel"
+              >
+                <X size={18} />
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
+              title="Edit Profile"
+            >
+              <Pencil size={18} />
+            </button>
+          )}
+        </div>
+
+        {/* Header */}
+        <h1 className="text-2xl font-bold text-center mb-8 text-gray-800">
+          My Profile
+        </h1>
 
         {/* Profile Image */}
         <div className="flex flex-col items-center mb-6">
-          <label htmlFor="imageUpload" className="cursor-pointer">
+          <label htmlFor="imageUpload" className="cursor-pointer relative">
             <Image
-              src={preview || (typeof user.image === "string" ? user.image : "/default-avatar.png")}
+              src={
+                preview ||
+                (typeof user.image === "string"
+                  ? user.image
+                  : "/default-avatar.png")
+              }
               alt="Profile"
               width={120}
               height={120}
-              className="rounded-full border-4 border-blue-500 shadow-md"
+              className="rounded-full border-4 border-blue-500 shadow-lg object-cover"
             />
+            {isEditing && (
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
+                <span className="text-white text-sm">Change</span>
+              </div>
+            )}
           </label>
-          <input
-            type="file"
-            id="imageUpload"
-            className="hidden"
-            onChange={handleImage}
-            accept="image/*"
-          />
+          {isEditing && (
+            <input
+              type="file"
+              id="imageUpload"
+              className="hidden"
+              onChange={handleImage}
+              accept="image/*"
+            />
+          )}
         </div>
 
-        {/* Name */}
-        <label className="block text-gray-700 font-medium mb-1">Name</label>
-        <input
-          type="text"
-          name="name"
-          value={user.name}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 mb-4"
-        />
+        {/* Details */}
+        <div className="space-y-4">
+          {/* Name */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Name</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="name"
+                value={user.name}
+                onChange={handleChange}
+                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+              />
+            ) : (
+              <p className="text-gray-800 border rounded-lg px-3 py-2 bg-gray-50">
+                {user.name || "No name added"}
+              </p>
+            )}
+          </div>
 
-        {/* Email */}
-        <label className="block text-gray-700 font-medium mb-1">Email</label>
-        <input
-          type="text"
-          name="email"
-          value={user.email}
-          readOnly
-          className="w-full border rounded-lg px-3 py-2 mb-4 bg-gray-100 cursor-not-allowed"
-        />
+          {/* Email */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Email</label>
+            <p className="text-gray-800 border rounded-lg px-3 py-2 bg-gray-100">
+              {user.email}
+            </p>
+          </div>
 
-        {/* Mobile */}
-        <label className="block text-gray-700 font-medium mb-1">Mobile</label>
-        <input
-          type="text"
-          name="mobile"
-          value={user.mobile}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 mb-4"
-        />
+          {/* Mobile */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Mobile</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="mobile"
+                value={user.mobile}
+                onChange={handleChange}
+                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+              />
+            ) : (
+              <p className="text-gray-800 border rounded-lg px-3 py-2 bg-gray-50">
+                {user.mobile}
+              </p>
+            )}
+          </div>
 
-        {/* Address */}
-        <label className="block text-gray-700 font-medium mb-1">Address</label>
-        <textarea
-          name="address"
-          value={user.address}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 mb-6"
-        ></textarea>
-
-        <button
-          onClick={handleSave}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
-        >
-          Save Changes
-        </button>
+          {/* Address */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Address</label>
+            {isEditing ? (
+              <textarea
+                name="address"
+                value={user.address}
+                onChange={handleChange}
+                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+              ></textarea>
+            ) : (
+              <p className="text-gray-800 border rounded-lg px-3 py-2 bg-gray-50">
+                {user.address}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
