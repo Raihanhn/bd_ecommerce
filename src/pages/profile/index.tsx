@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Pencil, Save, X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 
 type UserType = {
   name: string;
   email: string;
   mobile: string;
-  address: string; 
+  address: string;
   image: string | File;
 };
 
@@ -17,6 +17,10 @@ export default function ProfilePage() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [isPasswordEditing, setIsPasswordEditing] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [user, setUser] = useState<UserType>({
     name: "",
     email: "",
@@ -26,7 +30,6 @@ export default function ProfilePage() {
   });
   const [preview, setPreview] = useState<string | null>(null);
 
-  // Fetch user data
   useEffect(() => {
     if (session?.user?.email) {
       axios
@@ -59,9 +62,7 @@ export default function ProfilePage() {
       formData.append("mobile", user.mobile);
       formData.append("address", user.address);
 
-      if (user.image instanceof File) {
-        formData.append("image", user.image);
-      }
+      if (user.image instanceof File) formData.append("image", user.image);
 
       await axios.post("/api/profile/update", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -75,140 +76,222 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) return <div className="text-center py-20">Loading...</div>;
+  const handlePasswordUpdate = async () => {
+    if (!newPassword || !confirmPassword) {
+      alert("Please fill in both password fields.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    try {
+      await axios.post("/api/profile/update-password", {
+        email: user.email,
+        newPassword,
+      });
+      alert("Password updated successfully!");
+      setIsPasswordEditing(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update password.");
+    }
+  };
+
+  if (loading) return <div className="text-center py-20 text-white">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col items-center py-10">
-      <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md relative transition-all duration-300">
-        {/* Edit / Save Buttons */}
-        <div className="absolute top-6 right-6 flex gap-2">
-          {isEditing ? (
-            <>
-              <button
-                onClick={handleSave}
-                className="p-2 bg-green-600 text-white rounded-full hover:bg-green-700"
-                title="Save"
-              >
-                <Save size={18} />
-              </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="p-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400"
-                title="Cancel"
-              >
-                <X size={18} />
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
-              title="Edit Profile"
-            >
-              <Pencil size={18} />
-            </button>
-          )}
-        </div>
-
-        {/* Header */}
-        <h1 className="text-2xl font-bold text-center mb-8 text-gray-800">
-          My Profile
-        </h1>
-
-        {/* Profile Image */}
-        <div className="flex flex-col items-center mb-6">
-          <label htmlFor="imageUpload" className="cursor-pointer relative">
-            <Image
-              src={
-                preview ||
-                (typeof user.image === "string"
-                  ? user.image
-                  : "/default-avatar.png")
-              }
-              alt="Profile"
-              width={120}
-              height={120}
-              className="rounded-full border-4 border-blue-500 shadow-lg object-cover"
-            />
+    <div className="min-h-screen bg-[#1e1f25] text-white flex items-center justify-center py-10 px-4">
+      <div className="w-full max-w-5xl bg-[#2b2d35] rounded-2xl shadow-2xl p-8 flex flex-col md:flex-row gap-10 border border-gray-700">
+        {/* ===== Left Section ===== */}
+        <div className="flex flex-col items-center w-full md:w-1/3 space-y-4">
+          <div className="relative">
+            <label htmlFor="imageUpload" className="cursor-pointer">
+              <Image
+                src={
+                  preview ||
+                  (typeof user.image === "string" ? user.image : "/default-avatar.png")
+                }
+                alt="Profile"
+                width={150}
+                height={150}
+                className="rounded-full border-4 border-green-500 shadow-xl object-cover"
+              />
+              {isEditing && (
+                <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center text-sm">
+                  Change
+                </div>
+              )}
+            </label>
             {isEditing && (
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
-                <span className="text-white text-sm">Change</span>
-              </div>
+              <input
+                type="file"
+                id="imageUpload"
+                className="hidden"
+                onChange={handleImage}
+                accept="image/*"
+              />
             )}
-          </label>
-          {isEditing && (
-            <input
-              type="file"
-              id="imageUpload"
-              className="hidden"
-              onChange={handleImage}
-              accept="image/*"
-            />
+          </div>
+
+          <h2 className="text-xl font-semibold">{user.name || "Your Name"}</h2>
+          <p className="text-gray-400">@{user.email?.split("@")[0]}</p>
+
+          {!isPasswordEditing ? (
+            <button
+              onClick={() => setIsPasswordEditing(true)}
+              className="bg-emerald-600 hover:bg-emerald-700 px-6 py-2 rounded-lg font-semibold"
+            >
+              Change Password
+            </button>
+          ) : (
+            <div className="w-full space-y-3">
+              <input
+                type="password"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full bg-[#20222a] border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-green-500 outline-none"
+              />
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full bg-[#20222a] border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-green-500 outline-none"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={handlePasswordUpdate}
+                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-semibold"
+                >
+                  Save Password
+                </button>
+                <button
+                  onClick={() => setIsPasswordEditing(false)}
+                  className="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           )}
+
+          <button className="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-lg font-semibold">
+            Logout
+          </button>
         </div>
 
-        {/* Details */}
-        <div className="space-y-4">
-          {/* Name */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-1">Name</label>
-            {isEditing ? (
-              <input
-                type="text"
-                name="name"
-                value={user.name}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-              />
-            ) : (
-              <p className="text-gray-800 border rounded-lg px-3 py-2 bg-gray-50">
-                {user.name || "No name added"}
-              </p>
-            )}
+        {/* ===== Right Section ===== */}
+        <div className="flex-1 space-y-6">
+          {/* Header + Edit/Save Buttons */}
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Personal Information</h1>
+            <div className="flex gap-2">
+              {isEditing ? (
+                <>
+                  <button
+                    onClick={handleSave}
+                    className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-semibold"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="p-2 bg-gray-500 rounded-full hover:bg-gray-600"
+                  >
+                    <X size={18} />
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="p-2 bg-blue-600 rounded-full hover:bg-blue-700"
+                >
+                  <Pencil size={18} />
+                </button>
+              )}
+            </div>
           </div>
 
-          {/* Email */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-1">Email</label>
-            <p className="text-gray-800 border rounded-lg px-3 py-2 bg-gray-100">
-              {user.email}
-            </p>
+          {/* Info Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Name */}
+            <div>
+              <label className="block text-gray-400 text-sm mb-1">Full Name</label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="name"
+                  value={user.name}
+                  onChange={handleChange}
+                  className="w-full bg-[#20222a] border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-green-500 outline-none"
+                />
+              ) : (
+                <div className="bg-[#20222a] border border-gray-700 rounded-lg px-3 py-2">
+                  {user.name}
+                </div>
+              )}
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-gray-400 text-sm mb-1">Email</label>
+              <div className="bg-[#20222a] border border-gray-700 rounded-lg px-3 py-2 text-gray-300">
+                {user.email}
+              </div>
+            </div>
+
+            {/* Mobile */}
+            <div>
+              <label className="block text-gray-400 text-sm mb-1">Mobile</label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="mobile"
+                  value={user.mobile}
+                  onChange={handleChange}
+                  className="w-full bg-[#20222a] border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-green-500 outline-none"
+                />
+              ) : (
+                <div className="bg-[#20222a] border border-gray-700 rounded-lg px-3 py-2">
+                  {user.mobile}
+                </div>
+              )}
+            </div>
+
+            {/* Address */}
+            <div>
+              <label className="block text-gray-400 text-sm mb-1">Address</label>
+              {isEditing ? (
+                <textarea
+                  name="address"
+                  value={user.address}
+                  onChange={handleChange}
+                  className="w-full bg-[#20222a] border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-green-500 outline-none"
+                />
+              ) : (
+                <div className="bg-[#20222a] border border-gray-700 rounded-lg px-3 py-2">
+                  {user.address}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Mobile */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-1">Mobile</label>
-            {isEditing ? (
-              <input
-                type="text"
-                name="mobile"
-                value={user.mobile}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-              />
-            ) : (
-              <p className="text-gray-800 border rounded-lg px-3 py-2 bg-gray-50">
-                {user.mobile}
-              </p>
-            )}
-          </div>
-
-          {/* Address */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-1">Address</label>
-            {isEditing ? (
-              <textarea
-                name="address"
-                value={user.address}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-              ></textarea>
-            ) : (
-              <p className="text-gray-800 border rounded-lg px-3 py-2 bg-gray-50">
-                {user.address}
-              </p>
-            )}
-          </div>
+          {/* Edit Personal Info Button */}
+          {!isEditing && (
+            <div className="pt-4">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-emerald-600 hover:bg-emerald-700 px-6 py-2 rounded-lg font-semibold"
+              >
+                Edit Personal Information
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
