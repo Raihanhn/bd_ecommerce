@@ -143,7 +143,7 @@ export default function ProfilePage() {
           {!isPasswordEditing ? (
             <button
               onClick={() => setIsPasswordEditing(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 px-6 py-2 rounded-lg font-semibold"
+              className="bg-emerald-600 hover:bg-emerald-700 cursor-pointer px-6 py-2 rounded-lg font-semibold"
             >
               Change Password
             </button>
@@ -166,13 +166,13 @@ export default function ProfilePage() {
               <div className="flex gap-2">
                 <button
                   onClick={handlePasswordUpdate}
-                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-semibold"
+                  className="bg-green-600 hover:bg-green-700 cursor-pointer px-4 py-2 rounded-lg font-semibold"
                 >
                   Save Password
                 </button>
                 <button
                   onClick={() => setIsPasswordEditing(false)}
-                  className="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg font-semibold"
+                  className="bg-gray-500 hover:bg-gray-600 cursor-pointer px-4 py-2 rounded-lg font-semibold"
                 >
                   Cancel
                 </button>
@@ -180,7 +180,7 @@ export default function ProfilePage() {
             </div>
           )}
 
-          <button className="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-lg font-semibold">
+          <button className="bg-red-600 cursor-pointer hover:bg-red-700 px-6 py-2 rounded-lg font-semibold">
             Logout
           </button>
         </div>
@@ -195,7 +195,7 @@ export default function ProfilePage() {
                 <>
                   <button
                     onClick={handleSave}
-                    className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-semibold"
+                    className="bg-green-600 hover:bg-green-700 cursor-pointer px-4 py-2 rounded-lg font-semibold"
                   >
                     Save Changes
                   </button>
@@ -209,7 +209,7 @@ export default function ProfilePage() {
               ) : (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="p-2 bg-blue-600 rounded-full hover:bg-blue-700"
+                  className="p-2 bg-blue-600 rounded-full cursor-pointer hover:bg-blue-700"
                 >
                   <Pencil size={18} />
                 </button>
@@ -286,7 +286,7 @@ export default function ProfilePage() {
             <div className="pt-4">
               <button
                 onClick={() => setIsEditing(true)}
-                className="bg-emerald-600 hover:bg-emerald-700 px-6 py-2 rounded-lg font-semibold"
+                className="bg-emerald-600 hover:bg-emerald-700 px-6 py-2 rounded-lg cursor-pointer font-semibold"
               >
                 Edit Personal Information
               </button>
