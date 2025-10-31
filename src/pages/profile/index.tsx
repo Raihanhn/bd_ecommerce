@@ -42,7 +42,9 @@ export default function ProfilePage() {
     }
   }, [session]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
@@ -101,7 +103,8 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) return <div className="text-center py-20 text-white">Loading...</div>;
+  if (loading)
+    return <div className="text-center py-20 text-white">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-[#1e1f25] text-white flex items-center justify-center py-10 px-4">
@@ -113,7 +116,9 @@ export default function ProfilePage() {
               <Image
                 src={
                   preview ||
-                  (typeof user.image === "string" ? user.image : "/default-avatar.png")
+                  (typeof user.image === "string"
+                    ? user.image
+                    : "/default-avatar.png")
                 }
                 alt="Profile"
                 width={150}
@@ -142,13 +147,12 @@ export default function ProfilePage() {
 
           {!isPasswordEditing ? (
             <button
-  onClick={() => setIsPasswordEditing(true)}
-  className="relative overflow-hidden rounded-lg px-6 py-2 font-semibold text-white cursor-pointer
+              onClick={() => setIsPasswordEditing(true)}
+              className="relative overflow-hidden rounded-lg px-6 py-2 font-semibold text-white cursor-pointer
              bg-gradient-to-r from-emerald-500 via-indigo-500 to-violet-500 transition-all hover:shadow-[0_0_15px_rgba(139,92,246,0.6)]"
->
-  Change Password
-</button>
-
+            >
+              Change Password
+            </button>
           ) : (
             <div className="w-full space-y-3">
               <input
@@ -168,13 +172,14 @@ export default function ProfilePage() {
               <div className="flex gap-2">
                 <button
                   onClick={handlePasswordUpdate}
-                  className="bg-green-600 hover:bg-green-700 cursor-pointer px-4 py-2 rounded-lg font-semibold"
+                  className="bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:opacity-90 cursor-pointer px-4 py-2 rounded-lg font-semibold text-white transition"
                 >
                   Save Password
                 </button>
+
                 <button
                   onClick={() => setIsPasswordEditing(false)}
-                  className="bg-gray-500 hover:bg-gray-600 cursor-pointer px-4 py-2 rounded-lg font-semibold"
+                  className="bg-gradient-to-r from-gray-500 via-gray-600 to-gray-700 hover:opacity-90 cursor-pointer px-4 py-2 rounded-lg font-semibold text-white transition"
                 >
                   Cancel
                 </button>
@@ -182,11 +187,9 @@ export default function ProfilePage() {
             </div>
           )}
 
-        <button className="bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 hover:opacity-90 cursor-pointer px-6 py-2 rounded-lg font-semibold text-white transition">
-  Logout
-</button>
-
-
+          <button className="bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 hover:opacity-90 cursor-pointer px-6 py-2 rounded-lg font-semibold text-white transition">
+            Logout
+          </button>
         </div>
 
         {/* ===== Right Section ===== */}
@@ -199,10 +202,11 @@ export default function ProfilePage() {
                 <>
                   <button
                     onClick={handleSave}
-                    className="bg-green-600 hover:bg-green-700 cursor-pointer px-4 py-2 rounded-lg font-semibold"
+                    className="bg-gradient-to-r from-emerald-500 via-teal-500 to-green-600 hover:opacity-90 cursor-pointer px-4 py-2 rounded-lg font-semibold text-white transition"
                   >
                     Save Changes
                   </button>
+
                   <button
                     onClick={() => setIsEditing(false)}
                     className="p-2 bg-gray-500 rounded-full hover:bg-gray-600"
@@ -212,11 +216,11 @@ export default function ProfilePage() {
                 </>
               ) : (
                 <button
-  onClick={() => setIsEditing(true)}
-  className="p-2 rounded-full cursor-pointer bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 hover:opacity-90 transition"
->
-  <Pencil size={18} />
-</button>
+                  onClick={() => setIsEditing(true)}
+                  className="p-2 rounded-full cursor-pointer bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 hover:opacity-90 transition"
+                >
+                  <Pencil size={18} />
+                </button>
               )}
             </div>
           </div>
@@ -225,7 +229,9 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Name */}
             <div>
-              <label className="block text-gray-400 text-sm mb-1">Full Name</label>
+              <label className="block text-gray-400 text-sm mb-1">
+                Full Name
+              </label>
               {isEditing ? (
                 <input
                   type="text"
@@ -269,7 +275,9 @@ export default function ProfilePage() {
 
             {/* Address */}
             <div>
-              <label className="block text-gray-400 text-sm mb-1">Address</label>
+              <label className="block text-gray-400 text-sm mb-1">
+                Address
+              </label>
               {isEditing ? (
                 <textarea
                   name="address"
@@ -288,13 +296,12 @@ export default function ProfilePage() {
           {/* Edit Personal Info Button */}
           {!isEditing && (
             <div className="pt-4">
-             <button
-  onClick={() => setIsEditing(true)}
-  className="bg-gradient-to-r from-cyan-400 via-emerald-500 to-indigo-500 hover:opacity-90 px-6 py-2 rounded-lg cursor-pointer font-semibold text-white transition"
->
-  Edit Personal Information
-</button>
-
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-gradient-to-r from-cyan-400 via-emerald-500 to-indigo-500 hover:opacity-90 px-6 py-2 rounded-lg cursor-pointer font-semibold text-white transition"
+              >
+                Edit Personal Information
+              </button>
             </div>
           )}
         </div>
