@@ -142,11 +142,13 @@ export default function ProfilePage() {
 
           {!isPasswordEditing ? (
             <button
-              onClick={() => setIsPasswordEditing(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 cursor-pointer px-6 py-2 rounded-lg font-semibold"
-            >
-              Change Password
-            </button>
+  onClick={() => setIsPasswordEditing(true)}
+  className="relative overflow-hidden rounded-lg px-6 py-2 font-semibold text-white cursor-pointer
+             bg-gradient-to-r from-emerald-500 via-indigo-500 to-violet-500 transition-all hover:shadow-[0_0_15px_rgba(139,92,246,0.6)]"
+>
+  Change Password
+</button>
+
           ) : (
             <div className="w-full space-y-3">
               <input
@@ -180,9 +182,11 @@ export default function ProfilePage() {
             </div>
           )}
 
-          <button className="bg-red-600 cursor-pointer hover:bg-red-700 px-6 py-2 rounded-lg font-semibold">
-            Logout
-          </button>
+        <button className="bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 hover:opacity-90 cursor-pointer px-6 py-2 rounded-lg font-semibold text-white transition">
+  Logout
+</button>
+
+
         </div>
 
         {/* ===== Right Section ===== */}
@@ -208,11 +212,11 @@ export default function ProfilePage() {
                 </>
               ) : (
                 <button
-                  onClick={() => setIsEditing(true)}
-                  className="p-2 bg-blue-600 rounded-full cursor-pointer hover:bg-blue-700"
-                >
-                  <Pencil size={18} />
-                </button>
+  onClick={() => setIsEditing(true)}
+  className="p-2 rounded-full cursor-pointer bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 hover:opacity-90 transition"
+>
+  <Pencil size={18} />
+</button>
               )}
             </div>
           </div>
@@ -284,12 +288,13 @@ export default function ProfilePage() {
           {/* Edit Personal Info Button */}
           {!isEditing && (
             <div className="pt-4">
-              <button
-                onClick={() => setIsEditing(true)}
-                className="bg-emerald-600 hover:bg-emerald-700 px-6 py-2 rounded-lg cursor-pointer font-semibold"
-              >
-                Edit Personal Information
-              </button>
+             <button
+  onClick={() => setIsEditing(true)}
+  className="bg-gradient-to-r from-cyan-400 via-emerald-500 to-indigo-500 hover:opacity-90 px-6 py-2 rounded-lg cursor-pointer font-semibold text-white transition"
+>
+  Edit Personal Information
+</button>
+
             </div>
           )}
         </div>
