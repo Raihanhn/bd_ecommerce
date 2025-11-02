@@ -110,9 +110,9 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
-                    <div className="px-4 py-2 text-gray-700 border-b">
+                    {/* <div className="px-4 py-2 text-gray-700 border-b">
                       {session.user?.email}
-                    </div>
+                    </div> */}
                     <Link
                       href="/profile"
                       className="block px-4 py-2 hover:bg-gray-100"
@@ -174,7 +174,6 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <div className="py-2 text-gray-700">{session.user?.email}</div>
                   <Link
                     href="/profile"
                     onClick={() => setMobileMenuOpen(false)}
