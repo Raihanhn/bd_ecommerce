@@ -110,9 +110,7 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
-                    {/* <div className="px-4 py-2 text-gray-700 border-b">
-                      {session.user?.email}
-                    </div> */}
+                   
                     <Link
                       href="/profile"
                       className="block px-4 py-2 hover:bg-gray-100"

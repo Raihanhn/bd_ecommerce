@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import axios from "axios";
 import { Pencil, X } from "lucide-react";
 
@@ -20,6 +20,8 @@ export default function ProfilePage() {
   const [isPasswordEditing, setIsPasswordEditing] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+    const handleLogout = () => signOut({ redirect: true, callbackUrl: "/" });
 
   const [user, setUser] = useState<UserType>({
     name: "",
@@ -187,7 +189,7 @@ export default function ProfilePage() {
             </div>
           )}
 
-          <button className="bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 hover:opacity-90 cursor-pointer px-6 py-2 rounded-lg font-semibold text-white transition">
+          <button onClick={handleLogout} className="bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 hover:opacity-90 cursor-pointer px-6 py-2 rounded-lg font-semibold text-white transition">
             Logout
           </button>
         </div>
