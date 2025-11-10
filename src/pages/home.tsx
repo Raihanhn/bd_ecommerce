@@ -13,12 +13,7 @@ export default function HomePage({ user }: any) {
           You’re logged in with {user?.email}
         </p>
 
-        <button
-          onClick={() => signOut({ callbackUrl: "/" })}
-          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
-        >
-          Logout
-        </button>
+       
       </div>
     </div>
   );
