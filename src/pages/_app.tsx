@@ -15,7 +15,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   return (
     <SessionProvider session={session}>
       {!shouldHideNavbar && <Navbar />}
-      <main className={!shouldHideNavbar ? "pt-20" : ""}>
+      <main className={!shouldHideNavbar ? "" : ""}>
         <Component {...pageProps} />
       </main>
     </SessionProvider>
