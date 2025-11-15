@@ -11,7 +11,7 @@ export default function Navbar() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { cartCount } = useCartStore();
+  const  cartCount  = useCartStore((s) => s.cartCount);
   const { data: session } = useSession();
 
   // Close dropdown if clicked outside
@@ -61,6 +61,7 @@ export default function Navbar() {
         {/* Navbar links (desktop) */}
         <div className="hidden lg:flex items-center gap-4">
           <Link href="/home">Home</Link>
+          <Link href="/products" className="hover:text-green-600">Products</Link>
           <Link href="/about">About</Link>
           <Link href="/cart" className="relative">
             🛒
