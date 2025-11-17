@@ -13,4 +13,10 @@ const productSchema = new Schema({
   attributes: { type: Object }, // e.g. color, size
 }, { timestamps: true });
 
+productSchema.index({
+  name: "text",
+  description: "text",
+  slug: "text"
+});
+
 export default models.Product || mongoose.model("Product", productSchema);
