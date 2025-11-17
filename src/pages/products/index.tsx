@@ -46,21 +46,46 @@ export default function ProductsPage() {
           {products.map((p: Product) => (
             <div key={p._id} className="border rounded-lg overflow-hidden">
               <Link href={`/products/${p.slug}`}>
-                <img src={p.images?.[0] || "/default-avatar.png"} alt={p.name} className="w-full h-40 object-cover" />
+                <div className="w-full h-40">
+                  <img
+                    src={p.images?.[0] || "/default-avatar.png"}
+                    alt={p.name}
+                    className="w-full h-full object-contain block"
+                  />
+                </div>
               </Link>
               <div className="p-3">
-                <Link href={`/products/${p.slug}`} className="block font-medium">{p.name}</Link>
-                <div className="text-sm text-gray-600">${p.price.toFixed(2)}</div>
+                <Link
+                  href={`/products/${p.slug}`}
+                  className="block font-medium"
+                >
+                  {p.name}
+                </Link>
+                <div className="text-sm text-gray-600">
+                  ${p.price.toFixed(2)}
+                </div>
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() =>
-                      cartAdd({ productId: p._id, name: p.name, price: p.price, qty: 1, image: p.images?.[0], slug: p.slug })
+                      cartAdd({
+                        productId: p._id,
+                        name: p.name,
+                        price: p.price,
+                        qty: 1,
+                        image: p.images?.[0],
+                        slug: p.slug,
+                      })
                     }
                     className="px-3 py-1 bg-green-600 text-white rounded"
                   >
                     Add
                   </button>
-                  <Link href={`/products/${p.slug}`} className="px-3 py-1 border rounded">View</Link>
+                  <Link
+                    href={`/products/${p.slug}`}
+                    className="px-3 py-1 border rounded"
+                  >
+                    View
+                  </Link>
                 </div>
               </div>
             </div>
