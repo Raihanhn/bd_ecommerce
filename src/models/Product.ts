@@ -1,4 +1,5 @@
 import mongoose, { Schema, models } from "mongoose";
+import "./Category";
 
 const productSchema = new Schema({
   name: { type: String, required: true },
@@ -13,10 +14,8 @@ const productSchema = new Schema({
   attributes: { type: Object }, // e.g. color, size
 }, { timestamps: true });
 
-productSchema.index({
-  name: "text",
-  description: "text",
-  slug: "text"
-});
+// Text index for search
+productSchema.index({ name: "text", description: "text", slug: "text" });
+
 
 export default models.Product || mongoose.model("Product", productSchema);

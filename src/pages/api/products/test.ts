@@ -1,8 +1,9 @@
 // pages/api/products/test.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { dbConnect } from "@/lib/db";
-import Product from "@/models/Product";
 import Category from "@/models/Category";
+import Product from "@/models/Product";
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
