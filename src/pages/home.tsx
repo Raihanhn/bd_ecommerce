@@ -47,7 +47,7 @@ export default function HomePage() {
                     slug: p.slug,
                   })
                 }
-                className="mt-2 px-3 py-1 bg-green-600 text-white rounded w-full"
+                className="mt-2 px-3 py-1 bg-green-600 text-white rounded w-full cursor-pointer "
               >
                 Add to cart
               </button>
