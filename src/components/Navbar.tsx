@@ -62,6 +62,7 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-4">
           <Link href="/home">Home</Link>
           <Link href="/products" className="hover:text-green-600">Products</Link>
+          <Link href="/category" className="hover:text-green-600">Category</Link>
           <Link href="/about">About</Link>
           <Link href="/cart" className="relative">
             🛒
