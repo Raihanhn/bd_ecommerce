@@ -1,22 +1,39 @@
-// pages/products/[slug].tsx
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useCartStore } from "@/stores/useCartStore";
 
 export default function ProductDetail() {
   const router = useRouter();
   const { slug } = router.query;
+
+  // ---------------- STATE ----------------
   const [product, setProduct] = useState<any>(null);
   const [qty, setQty] = useState(1);
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
+
   const addItem = useCartStore((s) => s.addItem);
 
+  // ---------------- REFS ----------------
+  const imgRef = useRef<HTMLDivElement | null>(null);
+  const zoomRef = useRef<HTMLDivElement | null>(null);
+
+  // ---------------- HOOKS ----------------
+  // Fetch product
   useEffect(() => {
     if (!slug) return;
     fetchProduct(slug as string);
   }, [slug]);
 
+  // Update zoom image whenever selectedImg changes
+  useEffect(() => {
+    if (zoomRef.current && selectedImg) {
+      zoomRef.current.style.backgroundImage = `url(${selectedImg})`;
+      zoomRef.current.style.backgroundSize = "200%"; // zoom level
+    }
+  }, [selectedImg]);
+
+  // ---------------- FUNCTIONS ----------------
   async function fetchProduct(slug: string) {
     const res = await fetch(`/api/products/${slug}`);
     if (res.ok) {
@@ -26,20 +43,59 @@ export default function ProductDetail() {
     }
   }
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const zoom = zoomRef.current;
+    const imgContainer = imgRef.current;
+    if (!zoom || !imgContainer) return;
+
+    const rect = imgContainer.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const xPercent = (x / rect.width) * 100;
+    const yPercent = (y / rect.height) * 100;
+
+    zoom.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
+  };
+
+  const handleMouseEnter = () => {
+    if (zoomRef.current) zoomRef.current.style.display = "block";
+  };
+
+  const handleMouseLeave = () => {
+    if (zoomRef.current) zoomRef.current.style.display = "none";
+  };
+
+  // ---------------- CONDITIONAL RENDER ----------------
   if (!product) return <div className="text-center mt-20">Loading...</div>;
 
   const inStock = (product.quantity ?? 0) > 0;
 
+  // ---------------- JSX ----------------
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+
         {/* Product Images */}
-        <div>
-          <div className="overflow-hidden rounded border border-gray-200 cursor-zoom-in">
+        <div className="relative">
+          {/* Zoom Div (Above product div) */}
+          <div
+            ref={zoomRef}
+            className="absolute top-0 left-0 w-full h-full border border-gray-300 rounded pointer-events-none hidden z-10 bg-no-repeat bg-cover"
+          ></div>
+
+          {/* Main Image */}
+          <div
+            ref={imgRef}
+            className="overflow-hidden rounded border border-gray-200 cursor-crosshair"
+            onMouseMove={handleMouseMove}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <img
               src={selectedImg || "/default-avatar.png"}
               alt={product.name}
-              className="w-full h-[480px] object-cover transform transition-transform duration-300 hover:scale-110"
+              className="w-full h-[480px] object-cover"
             />
           </div>
 
@@ -63,7 +119,9 @@ export default function ProductDetail() {
         <div className="flex flex-col justify-between">
           <div>
             <h1 className="text-3xl font-bold">{product.name}</h1>
-            <p className="text-2xl text-green-600 mt-2">${product.price.toFixed(2)}</p>
+            <p className="text-2xl text-green-600 mt-2">
+              ${product.price.toFixed(2)}
+            </p>
             <p className="mt-4 text-gray-700">{product.description}</p>
 
             {/* Quantity Selector */}
