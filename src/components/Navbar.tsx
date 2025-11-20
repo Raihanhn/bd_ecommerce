@@ -56,9 +56,9 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/home" className="flex items-center">
           <img
-            src="/logo.png" // make sure your logo.jpg is in the public folder
+            src="/logo.png" 
             alt="Auric Mart"
-            className="h-16 w-auto" // adjust height/width as needed
+            className="h-8 sm:h-10 md:h-12 w-auto" 
           />
         </Link>
 
