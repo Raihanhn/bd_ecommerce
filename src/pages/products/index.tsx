@@ -1,4 +1,3 @@
-// pages/products/index.tsx
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -10,24 +9,28 @@ type Product = any;
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
   const cartAdd = useCartStore((s) => s.addItem);
 
   useEffect(() => {
-    fetchProducts();
-  }, [page]);
+    fetchProducts(""); // fetch all products initially
+  }, []);
 
-  async function fetchProducts(q?: string) {
+  async function fetchProducts(q: string) {
     setLoading(true);
-    const url = new URL("/api/products", location.origin);
-    url.searchParams.set("page", String(page));
-    url.searchParams.set("limit", "24");
-    if (q) url.searchParams.set("q", q);
+    try {
+      const url = new URL("/api/products", location.origin);
+      url.searchParams.set("limit", "24");
+      if (q) url.searchParams.set("q", q);
 
-    const res = await fetch(url.toString());
-    const data = await res.json();
-    setProducts(data.products || []);
-    setLoading(false);
+      const res = await fetch(url.toString());
+      const data = await res.json();
+      setProducts(data.products || data); // handle different API responses
+    } catch (err) {
+      console.error(err);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -41,6 +44,8 @@ export default function ProductsPage() {
 
       {loading ? (
         <div>Loading...</div>
+      ) : products.length === 0 ? (
+        <div>No products found</div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {products.map((p: Product) => (
@@ -55,15 +60,10 @@ export default function ProductsPage() {
                 </div>
               </Link>
               <div className="p-3">
-                <Link
-                  href={`/products/${p.slug}`}
-                  className="block font-medium"
-                >
+                <Link href={`/products/${p.slug}`} className="block font-medium">
                   {p.name}
                 </Link>
-                <div className="text-sm text-gray-600">
-                  ${p.price.toFixed(2)}
-                </div>
+                <div className="text-sm text-gray-600">${p.price.toFixed(2)}</div>
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() =>
@@ -80,10 +80,7 @@ export default function ProductsPage() {
                   >
                     Add
                   </button>
-                  <Link
-                    href={`/products/${p.slug}`}
-                    className="px-3 py-1 border rounded"
-                  >
+                  <Link href={`/products/${p.slug}`} className="px-3 py-1 border rounded">
                     View
                   </Link>
                 </div>
