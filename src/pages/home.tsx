@@ -20,47 +20,37 @@ export default function HomePage() {
   {
     id: 1,
     image: "/slider/slide1.png",
-    title: "Fresh Groceries Delivered",
-    subtitle: "Get the best quality every day",
     buttonText: "Shop Now",
     buttonLink: "/products",
   },
   {
     id: 2,
     image: "/slider/slide2.png",
-    title: "Healthy & Organic",
-    subtitle: "Organic food for your family",
     buttonText: "Explore",
     buttonLink: "/products",
   },
   {
     id: 3,
     image: "/slider/slide3.png",
-    title: "Exclusive Discounts",
-    subtitle: "Save more with every order",
     buttonText: "Shop Deals",
     buttonLink: "/products",
   },
   {
     id: 4,
     image: "/slider/slide4.png",
-    title: "Fresh Fruits & Veggies",
-    subtitle: "Delivered to your doorstep",
     buttonText: "Buy Now",
     buttonLink: "/products",
   },
   {
     id: 5,
     image: "/slider/slide5.png",
-    title: "Daily Essentials",
-    subtitle: "All your daily needs in one place",
     buttonText: "Start Shopping",
     buttonLink: "/products",
   },
 ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 ">
+    <div className=" mx-auto  ">
       <HeroSlider slides={slides} />
 
       <h1 className="text-3xl font-bold mb-6 mt-10">Featured Products</h1>

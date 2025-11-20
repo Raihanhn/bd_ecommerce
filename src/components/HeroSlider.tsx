@@ -5,8 +5,6 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 interface Slide {
   id: number;
   image: string;
-  title?: string;
-  subtitle?: string;
   buttonText?: string;
   buttonLink?: string;
 }
@@ -19,12 +17,10 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const delay = 4000; // 4 seconds
+  const delay = 5000; // 5 seconds for slower auto-slide
 
   const resetTimeout = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
   };
 
   useEffect(() => {
@@ -37,67 +33,66 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
     return () => resetTimeout();
   }, [currentIndex, slides.length]);
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
+  const prevSlide = () => setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  const nextSlide = () => setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
 
   return (
-    <div className="relative w-full h-[80vh] sm:h-[90vh] overflow-hidden">
+    <div className="relative w-full h-[70vh] sm:h-[80vh] md:h-[100vh] overflow-hidden ">
       {/* Slides */}
       {slides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${
+          className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${
             index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
         >
           <img
             src={slide.image}
-            alt={slide.title || `Slide ${index + 1}`}
-            className="w-full h-full object-cover"
+            alt={`Slide ${index + 1}`}
+            // className="w-full h-full object-cover object-center bg-gray-100"
+            className="absolute top-0 left-0 w-auto h-auto min-w-full min-h-full object-fill"
           />
-          {/* Optional overlay text */}
-          {slide.title && (
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white px-4">
-              <h2 className="text-3xl sm:text-5xl font-bold mb-2">{slide.title}</h2>
-              {slide.subtitle && <p className="text-lg sm:text-2xl mb-4">{slide.subtitle}</p>}
-              {slide.buttonText && slide.buttonLink && (
-                <a
-                  href={slide.buttonLink}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
-                >
-                  {slide.buttonText}
-                </a>
-              )}
+
+      
+          {slide.buttonText && slide.buttonLink && (
+            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+              <a
+                href={slide.buttonLink}
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded text-lg sm:text-xl md:text-2xl font-semibold shadow-lg"
+              >
+                {slide.buttonText}
+              </a>
             </div>
           )}
         </div>
       ))}
 
-      {/* Arrows */}
+      {/* Left Arrow */}
       <button
         onClick={prevSlide}
-        className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white text-3xl bg-black bg-opacity-30 hover:bg-opacity-50 p-2 rounded-full"
+        className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white text-3xl sm:text-4xl 
+             bg-white/20 backdrop-blur-md border border-white/30 
+             hover:bg-white/30 p-2 sm:p-3 rounded-full z-20 transition"
       >
         <FaChevronLeft />
       </button>
+
+      {/* Right Arrow */}
       <button
         onClick={nextSlide}
-        className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white text-3xl bg-black bg-opacity-30 hover:bg-opacity-50 p-2 rounded-full"
+        className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white text-3xl sm:text-4xl 
+             bg-white/20 backdrop-blur-md border border-white/30 
+             hover:bg-white/30 p-2 sm:p-3 rounded-full z-20 transition"
       >
         <FaChevronRight />
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-4 w-full flex justify-center gap-2">
+      <div className="absolute bottom-4 w-full flex justify-center gap-2 z-20">
         {slides.map((_, idx) => (
           <button
             key={idx}
-            className={`w-3 h-3 rounded-full ${
+            className={`w-1.5 h-1.5 rounded-full ${
               idx === currentIndex ? "bg-green-600" : "bg-gray-300"
             }`}
             onClick={() => setCurrentIndex(idx)}
