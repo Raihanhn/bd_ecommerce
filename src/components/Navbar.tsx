@@ -39,7 +39,7 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all ${
-        scrolled ? "bg-green-200 shadow-md" : "bg-transparent"
+        scrolled ? "bg-green-200 shadow-md" : "bg-transparent text-white"
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
@@ -58,7 +58,7 @@ export default function Navbar() {
           <img
             src="/logo.png" 
             alt="Auric Mart"
-            className="h-8 sm:h-10 md:h-12 w-auto" 
+            className="h-8 sm:h-10 md:h-12 w-auto bg-white/5 backdrop-blur-sm " 
           />
         </Link>
 
