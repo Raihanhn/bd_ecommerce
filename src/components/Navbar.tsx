@@ -11,7 +11,7 @@ export default function Navbar() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const  cartCount  = useCartStore((s) => s.cartCount);
+  const cartCount = useCartStore((s) => s.cartCount);
   const { data: session } = useSession();
 
   // Close dropdown if clicked outside
@@ -54,15 +54,23 @@ export default function Navbar() {
         </div>
 
         {/* Logo */}
-        <Link href="/home" className="font-bold text-xl">
-          ShopifyPro
+        <Link href="/home" className="flex items-center">
+          <img
+            src="/logo.png" // make sure your logo.jpg is in the public folder
+            alt="Auric Mart"
+            className="h-16 w-auto" // adjust height/width as needed
+          />
         </Link>
 
         {/* Navbar links (desktop) */}
         <div className="hidden lg:flex items-center gap-4">
           <Link href="/home">Home</Link>
-          <Link href="/products" className="hover:text-green-600">Products</Link>
-          <Link href="/category" className="hover:text-green-600">Category</Link>
+          <Link href="/products" className="hover:text-green-600">
+            Products
+          </Link>
+          <Link href="/category" className="hover:text-green-600">
+            Category
+          </Link>
           <Link href="/about">About</Link>
           <Link href="/cart" className="relative">
             🛒
@@ -112,7 +120,6 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
-                   
                     <Link
                       href="/profile"
                       className="block px-4 py-2 hover:bg-gray-100"
