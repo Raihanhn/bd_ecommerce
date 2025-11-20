@@ -21,7 +21,7 @@ export default function ProductsPage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gray-50 py-12 px-6">
+      <div className="min-h-screen bg-gray-50 py-20 px-6">
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-md p-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-800">Products</h1>
@@ -36,6 +36,7 @@ export default function ProductsPage() {
           <table className="w-full border text-sm">
             <thead className="bg-gray-100">
               <tr>
+                <th className="border p-2 text-left">SL</th>
                 <th className="border p-2 text-left">Name</th>
                 <th className="border p-2 text-left">Price</th>
                 <th className="border p-2 text-left">Category</th>
@@ -43,8 +44,9 @@ export default function ProductsPage() {
               </tr>
             </thead>
             <tbody>
-              {products.map((p: any) => (
+              {products.map((p: any, index: number) => (
                 <tr key={p._id} className="hover:bg-gray-50">
+                  <td className="border p-2">{index + 1}</td>
                   <td className="border p-2">{p.name}</td>
                   <td className="border p-2">${p.price}</td>
                   <td className="border p-2">{p.category?.name}</td>

@@ -55,7 +55,7 @@ export default function HomePage() {
 
       <h1 className="text-3xl font-bold mb-6 mt-10">Featured Products</h1>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-10">
         {products.map((p) => (
           <div key={p._id} className="border rounded-lg overflow-hidden">
             <Link href={`/products/${p.slug}`}>

@@ -39,7 +39,7 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all ${
-        scrolled ? "bg-green-200 shadow-md" : "bg-transparent text-white"
+        scrolled ? "bg-green-200 text-black shadow-md" : "bg-transparent text-white"
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
@@ -63,7 +63,7 @@ export default function Navbar() {
         </Link>
 
         {/* Navbar links (desktop) */}
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-4 text-[18px] ">
           <Link href="/home">Home</Link>
           <Link href="/products" className="hover:text-green-600">
             Products
