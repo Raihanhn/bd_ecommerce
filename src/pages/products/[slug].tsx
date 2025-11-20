@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useCartStore } from "@/stores/useCartStore";
+import Loader from "@/components/Loader";
 
 export default function ProductDetail() {
   const router = useRouter();
@@ -9,6 +10,7 @@ export default function ProductDetail() {
 
   // ---------------- STATE ----------------
   const [product, setProduct] = useState<any>(null);
+   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
@@ -35,12 +37,14 @@ export default function ProductDetail() {
 
   // ---------------- FUNCTIONS ----------------
   async function fetchProduct(slug: string) {
+    setLoading(true);
     const res = await fetch(`/api/products/${slug}`);
     if (res.ok) {
       const data = await res.json();
       setProduct(data);
       setSelectedImg(data.images?.[0] || "/default-avatar.png");
     }
+    setLoading(false);
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -67,7 +71,8 @@ export default function ProductDetail() {
   };
 
   // ---------------- CONDITIONAL RENDER ----------------
-  if (!product) return <div className="text-center mt-20">Loading...</div>;
+  // if (!product) return <div className="text-center mt-20">Loading...</div>;
+  if (loading) return <Loader color="#22c55e" size={60} />;
 
   const inStock = (product.quantity ?? 0) > 0;
 
