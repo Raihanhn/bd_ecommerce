@@ -78,7 +78,7 @@ export default function ProductDetail() {
 
   // ---------------- JSX ----------------
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-20 ">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
         {/* Product Images */}

@@ -39,7 +39,7 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all ${
-        scrolled ? "bg-green-200 text-black shadow-md" : "bg-transparent text-white"
+        scrolled ? "bg-green-200 text-black shadow-md" : "bg-white/35 backdrop-blur-sm text-black"
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
