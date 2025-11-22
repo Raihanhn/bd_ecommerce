@@ -8,49 +8,52 @@ import HeroSlider from "@/components/HeroSlider";
 
 export default function HomePage() {
   const [products, setProducts] = useState<any[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+
   const cartAdd = useCartStore((s) => s.addItem);
 
+  // Load 20 products at a time
+  async function loadProducts() {
+    if (loading || !hasMore) return;
+    setLoading(true);
+
+    const res = await fetch(`/api/products?page=${page}&limit=20`);
+    const data = await res.json();
+
+    setProducts((prev) => [...prev, ...data.products]);
+    setHasMore(page < data.totalPages);
+    setPage((p) => p + 1);
+
+    setLoading(false);
+  }
+
   useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data.products || []));
+    loadProducts(); // load first 20
   }, []);
 
+  // Infinite Scroll
+  useEffect(() => {
+    function handleScroll() {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        loadProducts();
+      }
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  });
+
   const slides = [
-  {
-    id: 1,
-    image: "/slider/slide1.png",
-    buttonText: "Shop Now",
-    buttonLink: "/products",
-  },
-  {
-    id: 2,
-    image: "/slider/slide2.png",
-    buttonText: "Explore",
-    buttonLink: "/products",
-  },
-  {
-    id: 3,
-    image: "/slider/slide3.png",
-    buttonText: "Shop Deals",
-    buttonLink: "/products",
-  },
-  {
-    id: 4,
-    image: "/slider/slide4.png",
-    buttonText: "Buy Now",
-    buttonLink: "/products",
-  },
-  {
-    id: 5,
-    image: "/slider/slide5.png",
-    buttonText: "Start Shopping",
-    buttonLink: "/products",
-  },
-];
+    { id: 1, image: "/slider/slide1.png", buttonText: "Shop Now", buttonLink: "/products" },
+    { id: 2, image: "/slider/slide2.png", buttonText: "Explore", buttonLink: "/products" },
+    { id: 3, image: "/slider/slide3.png", buttonText: "Shop Deals", buttonLink: "/products" },
+    { id: 4, image: "/slider/slide4.png", buttonText: "Buy Now", buttonLink: "/products" },
+    { id: 5, image: "/slider/slide5.png", buttonText: "Start Shopping", buttonLink: "/products" },
+  ];
 
   return (
-    <div className=" mx-auto  ">
+    <div className="mx-auto">
       <HeroSlider slides={slides} />
 
       <h1 className="text-3xl font-bold mb-6 mt-10">Featured Products</h1>
@@ -83,7 +86,7 @@ export default function HomePage() {
                     slug: p.slug,
                   })
                 }
-                className="mt-2 px-3 py-1 bg-green-600 text-white rounded w-full cursor-pointer "
+                className="mt-2 px-3 py-1 bg-green-600 text-white rounded w-full cursor-pointer"
               >
                 Add to cart
               </button>
@@ -91,6 +94,8 @@ export default function HomePage() {
           </div>
         ))}
       </div>
+
+      {loading && <div className="text-center py-6">Loading more...</div>}
     </div>
   );
 }
