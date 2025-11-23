@@ -44,7 +44,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-28 ">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Products</h1>
         <div style={{ width: 360 }}>
