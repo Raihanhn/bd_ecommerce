@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/stores/useCartStore";
 import SearchBar from "@/components/SearchBar";
+import RawLoader from "@/components/RawLoader";
 
 type Product = any;
 
@@ -52,7 +53,9 @@ export default function ProductsPage() {
       </div>
 
       {loading ? (
-        <div>Loading...</div>
+        <div className="flex justify-center items-center py-20">
+          <RawLoader />
+        </div>
       ) : (
         <>
           {products.length === 0 ? (
@@ -71,10 +74,15 @@ export default function ProductsPage() {
                     </div>
                   </Link>
                   <div className="p-3">
-                    <Link href={`/products/${p.slug}`} className="block font-medium">
+                    <Link
+                      href={`/products/${p.slug}`}
+                      className="block font-medium"
+                    >
                       {p.name}
                     </Link>
-                    <div className="text-sm text-gray-600">${p.price.toFixed(2)}</div>
+                    <div className="text-sm text-gray-600">
+                      ${p.price.toFixed(2)}
+                    </div>
                     <button
                       onClick={() =>
                         cartAdd({
