@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/stores/useCartStore";
 import Link from "next/link";
+import RawLoader from "@/components/RawLoader";
 
 type Product = any;
 type Category = { _id: string; name: string; slug: string };
@@ -63,8 +64,10 @@ export default function CategoryPage() {
           <button
             key={cat._id}
             onClick={() => setSelectedCategory(cat._id)}
-            className={`px-4 py-2 rounded border ${
-              selectedCategory === cat._id ? "bg-green-600 text-white" : "bg-white"
+            className={`px-4 py-2 rounded border cursor-pointer hover:bg-green-500 ${
+              selectedCategory === cat._id
+                ? "bg-green-600 text-white"
+                : "bg-white"
             }`}
           >
             {cat.name}
@@ -74,7 +77,9 @@ export default function CategoryPage() {
 
       {/* Products */}
       {loading ? (
-        <div>Loading...</div>
+        <div className="flex justify-center items-center py-20">
+          <RawLoader />
+        </div>
       ) : products.length === 0 ? (
         <div>No products found</div>
       ) : (
@@ -91,10 +96,15 @@ export default function CategoryPage() {
                 </div>
               </Link>
               <div className="p-3">
-                <Link href={`/products/${p.slug}`} className="block font-medium">
+                <Link
+                  href={`/products/${p.slug}`}
+                  className="block font-medium"
+                >
                   {p.name}
                 </Link>
-                <div className="text-sm text-gray-600">${p.price.toFixed(2)}</div>
+                <div className="text-sm text-gray-600">
+                  ${p.price.toFixed(2)}
+                </div>
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() =>
@@ -111,7 +121,10 @@ export default function CategoryPage() {
                   >
                     Add
                   </button>
-                  <Link href={`/products/${p.slug}`} className="px-3 py-1 border rounded">
+                  <Link
+                    href={`/products/${p.slug}`}
+                    className="px-3 py-1 border rounded"
+                  >
                     View
                   </Link>
                 </div>
