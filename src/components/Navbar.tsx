@@ -64,14 +64,14 @@ export default function Navbar() {
 
         {/* Navbar links (desktop) */}
         <div className="hidden lg:flex items-center gap-4 text-[18px] ">
-          <Link href="/home">Home</Link>
+          <Link href="/home" className="hover:text-green-600">Home</Link>
           <Link href="/products" className="hover:text-green-600">
             Products
           </Link>
           <Link href="/category" className="hover:text-green-600">
             Category
           </Link>
-          <Link href="/about">About</Link>
+          <Link href="/about" className="hover:text-green-600">About</Link>
           <Link href="/cart" className="relative">
             🛒
             {cartCount > 0 && (
@@ -82,16 +82,16 @@ export default function Navbar() {
           </Link>
 
           {/* User Icon */}
-          <div className="relative" ref={dropdownRef}>
+          <div className="relative " ref={dropdownRef}>
             <button
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-              className="flex items-center gap-1 text-2xl focus:outline-none"
+              className="flex items-center gap-1 text-2xl focus:outline-none cursor-pointer"
             >
               {session?.user?.image ? (
                 <img
                   src={session.user.image}
                   alt="User"
-                  className="w-8 h-8 rounded-full"
+                  className="w-8 h-8 rounded-full "
                 />
               ) : (
                 <FaUserCircle />
@@ -100,7 +100,7 @@ export default function Navbar() {
 
             {/* Dropdown */}
             {userDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50">
+              <div className="absolute right-0 mt-6 w-48 bg-white border rounded shadow-lg z-50">
                 {!session ? (
                   <>
                     <Link
@@ -148,6 +148,12 @@ export default function Navbar() {
             <Link href="/home" onClick={() => setMobileMenuOpen(false)}>
               Home
             </Link>
+             <Link href="/products" className="hover:text-green-600">
+            Products
+          </Link>
+          <Link href="/category" className="hover:text-green-600">
+            Category
+          </Link>
             <Link href="/about" onClick={() => setMobileMenuOpen(false)}>
               About
             </Link>
