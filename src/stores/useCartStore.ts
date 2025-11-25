@@ -12,6 +12,7 @@ interface CartItem {
 }
 
 interface CartState {
+  [x: string]: any;
   items: CartItem[];
   addItem: (item: CartItem) => void;
   removeItem: (productId: string) => void;

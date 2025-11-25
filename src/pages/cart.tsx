@@ -12,13 +12,45 @@ export default function CartPage() {
   const total = items.reduce((acc, i) => acc + i.price * i.qty, 0);
 
   if (items.length === 0) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
-        <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
-        <Link href="/products" className="text-blue-600 underline">Go to Products</Link>
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+      
+      <div className="mb-4 text-gray-500">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-20 w-20 mx-auto"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.2}
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m15-9l2 9m-5-4a2 2 0 11-4 0"
+          />
+        </svg>
       </div>
-    );
-  }
+
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        Your Cart is Empty
+      </h1>
+
+      <p className="text-gray-600 mb-6 max-w-md">
+        Looks like you haven’t added anything yet.  
+        Explore our products and find something you’ll love!
+      </p>
+
+      <Link
+        href="/products"
+        className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all shadow-md"
+      >
+        Browse Products
+      </Link>
+    </div>
+  );
+}
+
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
