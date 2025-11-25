@@ -29,7 +29,7 @@ export default function About() {
         </div>
 
         <div className="p-6 bg-white hover:bg-green-200  shadow rounded-xl border">
-          <h3 className="text-xl font-semibold text-green-600 mb-2">
+          <h3 className="text-xl font-semibold text-green-600  mb-2">
             🚚 Fast Delivery
           </h3>
           <p className="text-gray-600 text-sm">
