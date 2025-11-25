@@ -58,7 +58,7 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
             <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
               <a
                 href={slide.buttonLink}
-                className="bg-white/35 backdrop-blur-sm hover:bg-green-700 hover:text-white text-green-700 px-6 py-4 rounded-md text-lg sm:text-xl md:text-2xl font-semibold shadow-lg"
+                className="bg-white/35 backdrop-blur-sm hover:bg-green-500 hover:text-white italic text-green-700 px-6 py-4 rounded-md text-lg sm:text-xl md:text-2xl font-semibold shadow-lg"
               >
                 {slide.buttonText}
               </a>
