@@ -1,5 +1,6 @@
 // stores/useCartStore.ts
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface CartItem {
   productId: string;
@@ -18,26 +19,50 @@ interface CartState {
   cartCount: number;
 }
 
-export const useCartStore = create<CartState>((set, get) => ({
-  items: [],
-  addItem: (item) => {
-    const items = get().items;
-    const existing = items.find((i) => i.productId === item.productId);
-    if (existing) {
-      // Increase quantity if already in cart
-      const updated = items.map((i) =>
-        i.productId === item.productId ? { ...i, qty: i.qty + item.qty } : i
-      );
-      set({ items: updated, cartCount: updated.reduce((a, c) => a + c.qty, 0) });
-    } else {
-      const updated = [...items, item];
-      set({ items: updated, cartCount: updated.reduce((a, c) => a + c.qty, 0) });
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      cartCount: 0,
+
+      addItem: (item) => {
+        const items = get().items;
+        const existing = items.find((i) => i.productId === item.productId);
+
+        let updated;
+
+        if (existing) {
+          updated = items.map((i) =>
+            i.productId === item.productId
+              ? { ...i, qty: i.qty + item.qty }
+              : i
+          );
+        } else {
+          updated = [...items, item];
+        }
+
+        set({
+          items: updated,
+          cartCount: updated.reduce((sum, i) => sum + i.qty, 0),
+        });
+      },
+
+      removeItem: (productId) => {
+        const updated = get().items.filter((i) => i.productId !== productId);
+
+        set({
+          items: updated,
+          cartCount: updated.reduce((sum, i) => sum + i.qty, 0),
+        });
+      },
+
+      clear: () => {
+        set({ items: [], cartCount: 0 });
+      },
+    }),
+
+    {
+      name: "auric-cart", // saved in localStorage as "auric-cart"
     }
-  },
-  removeItem: (productId) => {
-    const updated = get().items.filter((i) => i.productId !== productId);
-    set({ items: updated, cartCount: updated.reduce((a, c) => a + c.qty, 0) });
-  },
-  clear: () => set({ items: [], cartCount: 0 }),
-  cartCount: 0,
-}));
+  )
+);
