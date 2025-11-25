@@ -19,7 +19,7 @@ export default function About() {
 
       {/* HIGHLIGHTS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-16">
-        <div className="p-6 bg-white shadow rounded-xl border">
+        <div className="p-6 bg-white hover:bg-green-200 shadow rounded-xl border">
           <h3 className="text-xl font-semibold text-green-600 mb-2">
             ✨ Quality Products
           </h3>
@@ -28,7 +28,7 @@ export default function About() {
           </p>
         </div>
 
-        <div className="p-6 bg-white shadow rounded-xl border">
+        <div className="p-6 bg-white hover:bg-green-200  shadow rounded-xl border">
           <h3 className="text-xl font-semibold text-green-600 mb-2">
             🚚 Fast Delivery
           </h3>
@@ -37,7 +37,7 @@ export default function About() {
           </p>
         </div>
 
-        <div className="p-6 bg-white shadow rounded-xl border">
+        <div className="p-6 bg-white hover:bg-green-200  shadow rounded-xl border">
           <h3 className="text-xl font-semibold text-green-600 mb-2">
             💳 Secure Payments
           </h3>
