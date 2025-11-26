@@ -1,3 +1,4 @@
+//pages/api/admin/upload.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { requireAdmin } from "@/lib/adminMiddleware";
 import formidable from "formidable";

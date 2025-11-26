@@ -1,3 +1,4 @@
+//pages/admin/upload.tsx
 "use client";
 
 import { useState } from "react";

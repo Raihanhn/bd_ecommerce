@@ -1,3 +1,4 @@
+// lib/db.ts
 //db.ts efficiently connects your app to MongoDB using Mongoose, with caching to prevent multiple connections.
 
 

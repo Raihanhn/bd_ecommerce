@@ -1,3 +1,4 @@
+//pages/products/[slug].tsx
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";

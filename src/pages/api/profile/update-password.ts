@@ -1,3 +1,4 @@
+//pages/api/profile/update-pasword.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { dbConnect } from "@/lib/db";
 import User from "@/models/User";

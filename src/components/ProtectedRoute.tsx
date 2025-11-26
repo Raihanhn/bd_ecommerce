@@ -1,3 +1,4 @@
+//components/ProtectedRoute.tsx
 //Your ProtectedRoute component ensures that only authenticated users can access
 //  certain pages by redirecting unauthenticated users to the login page.
 

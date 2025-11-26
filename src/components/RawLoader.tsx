@@ -1,3 +1,4 @@
+//components/RawLoader.tsx
 "use client";
 
 export default function RawLoader() {
@@ -14,3 +15,5 @@ export default function RawLoader() {
     </div>
   );
 }
+
+

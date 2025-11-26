@@ -1,5 +1,6 @@
+//models/Order.ts
 import mongoose, { Schema, models } from "mongoose";
-
+ 
 const orderSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
   items: [

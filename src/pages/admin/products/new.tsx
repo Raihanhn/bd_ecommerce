@@ -1,3 +1,4 @@
+//pages/admin/products/new.tsx 
 "use client";
 
 import { useState, useEffect } from "react";

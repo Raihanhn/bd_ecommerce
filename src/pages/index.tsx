@@ -1,3 +1,4 @@
+//pages/index.tsx
 import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/authOptions";
 import LandingPageClient from "../components/LandingPageClient"; // move your UI to a client component

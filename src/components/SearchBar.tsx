@@ -1,3 +1,4 @@
+//components/SearchBar.tsx
 "use client";
 import { useState, useEffect, useRef } from "react";
 
@@ -7,7 +8,7 @@ export default function SearchBar({ onSearch }: { onSearch?: (q: string) => void
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (timerRef.current) window.clearTimeout(timerRef.current);
+    if (timerRef.current) window.clearTimeout(timerRef.current);    
 
     timerRef.current = window.setTimeout(() => {
       if (onSearch) onSearch(q.trim());

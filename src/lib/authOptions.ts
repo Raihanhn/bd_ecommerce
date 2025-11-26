@@ -1,3 +1,4 @@
+// lib/authOptions.ts
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -5,7 +6,7 @@ import bcrypt from "bcryptjs";
 import { dbConnect } from "./db";
 import User from "../models/User";
 
-export const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {       
   providers: [
     // Google login
     GoogleProvider({

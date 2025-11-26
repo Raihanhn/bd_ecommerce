@@ -1,3 +1,4 @@
+//pages/admin/categories/create.tsx
 "use client";
 
 import { useState } from "react";

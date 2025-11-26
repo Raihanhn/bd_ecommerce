@@ -1,3 +1,4 @@
+//models/Product.ts
 import mongoose, { Schema, models } from "mongoose";
 import "./Category";
 

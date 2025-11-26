@@ -1,3 +1,4 @@
+//pages/profile/index.tsx
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";

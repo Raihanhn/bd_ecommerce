@@ -1,3 +1,4 @@
+//pages/api/admin/categories/index.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { dbConnect } from "@/lib/db";
 import Category from "@/models/Category";
