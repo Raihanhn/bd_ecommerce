@@ -12,6 +12,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { items, amount, user, shippingAddress } = req.body;
 
+      // ===== Validation =====
+    if (!items || items.length === 0)
+      return res.status(400).json({ message: "No items provided" });
+
+    if (!amount || amount <= 0)
+      return res.status(400).json({ message: "Invalid amount" });
+
+    if (!shippingAddress || !shippingAddress.name)
+      return res.status(400).json({ message: "Invalid shipping address" });
+
     // Create ORDER first with unpaid
     const order = await Order.create({
       user: user || null,

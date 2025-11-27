@@ -55,6 +55,14 @@ const orderSchema = new Schema(
       city: String,
       postalCode: String,
     },
+
+    orderHistory: [
+      {
+        status: { type: String },
+        message: { type: String },
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );
