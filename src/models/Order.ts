@@ -1,20 +1,62 @@
 //models/Order.ts
 import mongoose, { Schema, models } from "mongoose";
- 
-const orderSchema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  items: [
-    {
-      product: { type: Schema.Types.ObjectId, ref: "Product" },
-      name: String,
-      price: Number,
-      qty: Number,
+
+const orderSchema = new Schema(
+  {
+    user: { type: Schema.Types.ObjectId, ref: "User" }, // user may be guest or logged in
+
+    items: [
+      {
+        product: { type: Schema.Types.ObjectId, ref: "Product" },
+        name: String,
+        price: Number,
+        qty: Number,
+      },
+    ],
+
+    total: { type: Number, required: true },
+
+    // PAYMENT FIELDS
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "sslcommerz"],
+      required: true,
     },
-  ],
-  total: { type: Number, required: true },
-  status: { type: String, enum: ["pending","processing","shipped","delivered","cancelled"], default: "pending" },
-  shippingAddress: { type: Object },
-  paymentInfo: { type: Object },
-}, { timestamps: true });
+
+    paymentStatus: {
+      type: String,
+      enum: ["unpaid", "paid"],
+      default: "unpaid",
+    },
+
+    transactionId: { type: String }, // SSLCommerz tran_id
+    paymentInfo: { type: Object },   // full callback response
+
+    // ORDER STATUS STEPS
+    status: {
+      type: String,
+      enum: [
+        "pending",
+        "processing",
+        "packaging",
+        "shipped",
+        "delivered",
+        "cancelled",
+      ],
+      default: "pending",
+    },
+
+    // CUSTOMER SHIPPING INFO
+    shippingAddress: {
+      name: String,
+      phone: String,
+      email: String,
+      address: String,
+      city: String,
+      postalCode: String,
+    },
+  },
+  { timestamps: true }
+);
 
 export default models.Order || mongoose.model("Order", orderSchema);
