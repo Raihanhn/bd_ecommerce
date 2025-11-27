@@ -1,47 +1,74 @@
 // /pages/api/payment/initiate.ts
 import type { NextApiRequest, NextApiResponse } from "next";
+import {dbConnect} from "@/lib/db";
+import Order from "@/models/Order";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed" });
+  if (req.method !== "POST")
+    return res.status(405).json({ message: "Method not allowed" });
 
-  const { amount, customerName, customerEmail, customerPhone, orderId } = req.body;
-
-  const store_id = process.env.SSLCOMMERZ_STORE_ID;
-  const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD;
-  const is_sandbox = true; // sandbox mode
-
-  const postData = {
-    store_id,
-    store_passwd,
-    total_amount: amount,
-    currency: "BDT",
-    tran_id: orderId,
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`,
-    fail_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/fail`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/cancel`,
-    cus_name: customerName,
-    cus_email: customerEmail,
-    cus_phone: customerPhone,
-    shipping_method: "NO",
-    product_name: "Order Payment",
-    product_category: "E-commerce",
-    product_profile: "general",
-  };
+  await dbConnect();
 
   try {
+    const { items, amount, user, shippingAddress } = req.body;
+
+    // Create ORDER first with unpaid
+    const order = await Order.create({
+      user: user || null,
+      items: items.map((i: any) => ({
+        product: i.productId,
+        name: i.name,
+        price: i.price,
+        qty: i.qty,
+      })),
+      total: amount,
+      paymentMethod: "sslcommerz",
+      paymentStatus: "unpaid",
+      status: "pending",
+      shippingAddress,
+    });
+
+    const store_id = process.env.SSLCOMMERZ_STORE_ID!;
+    const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD!;
+    const isSandbox = true;
+
+    const postData: any = {
+      store_id,
+      store_passwd,
+      total_amount: amount,
+      currency: "BDT",
+      tran_id: order._id.toString(), // order ID used as transaction ID
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/success`,
+      fail_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/fail`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/cancel`,
+      shipping_method: "Courier",
+      product_name: "Ecommerce Order",
+      product_category: "General",
+      product_profile: "general",
+
+      cus_name: shippingAddress.name,
+      cus_email: shippingAddress.email,
+      cus_add1: shippingAddress.address,
+      cus_city: shippingAddress.city,
+      cus_phone: shippingAddress.phone,
+    };
+
     const response = await fetch(
-      is_sandbox
+      isSandbox
         ? "https://sandbox.sslcommerz.com/gwprocess/v4/api.php"
         : "https://securepay.sslcommerz.com/gwprocess/v4/api.php",
       {
         method: "POST",
-        body: new URLSearchParams(postData as any).toString(),
+        body: new URLSearchParams(postData).toString(),
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
       }
     );
+
     const data = await response.json();
-    res.status(200).json(data);
-  } catch (err) {
-    res.status(500).json({ error: "Payment initiation failed", details: err });
+
+    return res.json({ success: true, paymentUrl: data.GatewayPageURL, orderId: order._id });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: "Payment initiation error" });
   }
 }
