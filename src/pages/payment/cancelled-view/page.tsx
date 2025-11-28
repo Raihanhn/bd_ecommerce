@@ -3,7 +3,7 @@ export default function PaymentCancelledPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
       <img
-        src="/cancel.png"
+        src="/cancelled.jpeg"
         alt="cancelled"
         className="w-24 h-24 mb-4"
       />

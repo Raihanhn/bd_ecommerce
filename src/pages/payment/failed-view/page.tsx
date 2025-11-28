@@ -3,7 +3,7 @@ export default function PaymentFailedPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
       <img
-        src="/failed.png"
+        src="/failed.jpeg"
         alt="failed"
         className="w-24 h-24 mb-4"
       />
