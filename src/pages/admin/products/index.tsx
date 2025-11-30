@@ -49,7 +49,7 @@ export default function ProductsPage() {
                 <tr key={p._id} className="hover:bg-gray-50">
                   <td className="border p-2">{index + 1}</td>
                   <td className="border p-2">{p.name}</td>
-                  <td className="border p-2">${p.price}</td>
+                  <td className="border p-2">৳{p.price}</td>
                   <td className="border p-2">{p.category?.name}</td>
                   <td className="border p-2 space-x-3">
                     <Link
