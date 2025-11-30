@@ -22,27 +22,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (category) filter.category = category;
     if (visible) filter.isVisible = visible === "true";
 
-    // Word-by-word search in 'name' and 'description'
+    // ⭐⭐⭐ Weighted Search Logic ⭐⭐⭐
     if (q && (q as string).trim().length > 0) {
-      const words = (q as string)
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean);
+      const search = (q as string).trim();
 
-      filter.$and = words.map((word) => ({
-        $or: [
-          { name: { $regex: word, $options: "i" } },
-          { description: { $regex: word, $options: "i" } },
-        ],
-      }));
+      filter.$or = [
+        // 1️⃣ Starts with (highest priority)
+        { name: { $regex: `^${search}`, $options: "i" } },
+
+        // 2️⃣ Exact full-word match
+        { name: { $regex: `\\b${search}\\b`, $options: "i" } },
+
+        // 3️⃣ Contains word inside description
+        { description: { $regex: `\\b${search}\\b`, $options: "i" } },
+
+        // 4️⃣ Generic fallback partial match
+        { name: { $regex: search, $options: "i" } },
+      ];
     }
 
-    // Fetch total count
+    // Count documents
     const total = await Product.countDocuments(filter);
 
-    // Fetch products with pagination and category populated
+    // Fetch products
     const products = await Product.find(filter)
-      .sort({ createdAt: -1 })
+      .sort({
+        // ⭐ Prioritize name similarity – exact matches come first
+        name: 1,
+        createdAt: -1,
+      })
       .skip((pageNum - 1) * lim)
       .limit(lim)
       .populate("category");
@@ -54,6 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       limit: lim,
       totalPages: Math.ceil(total / lim),
     });
+
   } catch (err) {
     console.error("API error:", err);
     return res.status(500).json({ message: "Failed to fetch products", error: err });
