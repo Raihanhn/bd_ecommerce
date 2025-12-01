@@ -65,8 +65,8 @@ export default function CartPage() {
             />
             <div className="flex-1">
               <h2 className="font-medium">{i.name}</h2>
-              <p>
-                ${i.price.toFixed(2)} x {i.qty} = $
+              <p className="text-sm text-green-600 font-mono">
+                ৳{i.price.toFixed(2)} x {i.qty} = ৳
                 {(i.price * i.qty).toFixed(2)}
               </p>
             </div>
@@ -81,7 +81,7 @@ export default function CartPage() {
       </div>
 
       <div className="mt-6 flex justify-between items-center">
-        <h2 className="text-xl font-bold">Total: ${total.toFixed(2)}</h2>
+        <h2 className="text-xl font-bold text-green-600 font-mono">Total: ৳{total.toFixed(2)}</h2>
         <div className="flex gap-3">
           <button onClick={clearCart} className="px-4 py-2 bg-gray-300 rounded">
             Clear Cart
