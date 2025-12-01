@@ -75,7 +75,7 @@ export default function HomePage() {
               <Link href={`/products/${p.slug}`} className="block font-medium">
                 {p.name}
               </Link>
-              <div className="text-sm text-gray-600">${p.price.toFixed(2)}</div>
+              <div className="text-sm text-green-600 font-mono">৳{p.price.toFixed(2)}</div>
               <button
                 onClick={() =>
                   cartAdd({
