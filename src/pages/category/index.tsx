@@ -102,8 +102,8 @@ export default function CategoryPage() {
                 >
                   {p.name}
                 </Link>
-                <div className="text-sm text-gray-600">
-                  ${p.price.toFixed(2)}
+                <div className="text-sm text-green-600 font-mono">
+                  ৳{p.price.toFixed(2)}
                 </div>
                 <div className="mt-3 flex gap-2">
                   <button
