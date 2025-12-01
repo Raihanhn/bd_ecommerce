@@ -1,4 +1,4 @@
-//app/payment/failed-view/page.tsx
+//app/payment/fail.tsx
 export default function PaymentFailedPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
