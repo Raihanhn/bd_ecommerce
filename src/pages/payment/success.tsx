@@ -1,4 +1,4 @@
-//pages/payment/success-view.tsx
+//pages/payment/success.tsx
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
 

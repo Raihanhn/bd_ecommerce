@@ -36,6 +36,8 @@ export default async function handler(
         .json({ message: "Missing required shipping address fields." });
 
     // Create ORDER first with unpaid
+
+
     const order = await Order.create({
       user: user || null,
       items: items.map((i: any) => ({
@@ -54,6 +56,7 @@ export default async function handler(
     const store_id = process.env.SSLCOMMERZ_STORE_ID!;
     const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD!;
     const isSandbox = true;
+    const tranId = order._id.toString();
 
     // 🚀 FIX: Added cus_country, ship_name, ship_add1, ship_city, and ship_country as required by SSLCommerz
     const postData: any = {
@@ -61,7 +64,7 @@ export default async function handler(
       store_passwd,
       total_amount: amount,
       currency: "BDT",
-      tran_id: order._id.toString(), // order ID used as transaction ID
+      tran_id: tranId,
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/success`,
       fail_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/fail`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/cancel`,
@@ -100,10 +103,10 @@ export default async function handler(
 
     const data = await response.json();
 
-    console.log("==========================================");
-    console.log("SSLCOMMERZ RESPONSE DATA:");
-    console.log(data); // 🐞 Log the raw response for debugging
-    console.log("==========================================");
+    // console.log("==========================================");
+    // console.log("SSLCOMMERZ RESPONSE DATA:");
+    // console.log(data); 
+    // console.log("==========================================");
 
     // Check if the response contains the gateway URL
     if (data.status === "SUCCESS" && data.GatewayPageURL) {
@@ -111,7 +114,7 @@ export default async function handler(
       return res.json({
         success: true,
         paymentUrl: data.GatewayPageURL,
-        orderId: order._id,
+        orderId: order.orderId,
       });
     } else {
       // 💡 Send the specific error message back to the frontend for better debugging

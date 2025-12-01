@@ -3,37 +3,49 @@ import { dbConnect } from "@/lib/db";
 import Order from "@/models/Order";
 
 export const config = {
-  api: {
-    bodyParser: true,
-  },
+api: {
+bodyParser: true,
+},
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+if (req.method !== "POST" && req.method !== "GET") {
+return res.status(405).send("Method Not Allowed");
+}
+
+await dbConnect();
+
+try {
+const data = req.method === "POST" ? req.body : req.query;
+
+const tran_id = data.tran_id as string;
+
+if (!tran_id) {
+  return res.redirect("/payment/fail");
+}
+
+// Find order using orderId field (not Mongo _id)
+const order = await Order.findOne({ orderId: tran_id });
+
+if (!order) {
+  return res.redirect(`/payment/fail?orderId=${tran_id}`);
+}
+
+// Update order as failed
+await Order.findOneAndUpdate(
+  { orderId: tran_id },
+  {
+    status: "failed",
+    paymentStatus: "failed",
+    paymentInfo: data,
   }
+);
 
-  await dbConnect();
+return res.redirect(`/payment/fail?orderId=${tran_id}`);
 
-  try {
-    const body = req.body;
 
-    const orderId = body.tran_id || body["tran_id"];
-    if (!orderId) {
-      return res.status(400).send("Transaction ID (tran_id) missing");
-    }
-
-    // Update order as cancelled/failed
-    await Order.findByIdAndUpdate(orderId, {
-      status: "cancelled",
-      paymentStatus: "unpaid",
-      paymentInfo: body,
-    });
-
-    // Redirect user to failed page
-    return res.status(200).send(`<script>window.location.href='/payment/failed-view'</script>`);
-  } catch (err) {
-    console.error("Payment Fail Error:", err);
-    res.status(500).json({ message: "Failed to process failed payment" });
-  }
+} catch (err) {
+console.error("Payment Fail Error:", err);
+return res.redirect("/payment/fail");
+}
 }

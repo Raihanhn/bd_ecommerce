@@ -41,7 +41,7 @@ export default function CheckoutPage() {
 
       if (data.success) {
         clearCart();
-        router.push(`/payment/success-view?orderId=${data.orderId || orderId}`);
+        router.push(`/payment/success?orderId=${data.orderId || orderId}`);
       } else {
         alert(data.message || "COD Order failed to process.");
       }

@@ -1,4 +1,4 @@
-//app/payment/cancelled-view/page.tsx
+//app/payment/cancel.tsx
 export default function PaymentCancelledPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">

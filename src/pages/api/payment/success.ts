@@ -1,110 +1,138 @@
-// /pages/api/payment/success.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { dbConnect } from "@/lib/db";
 import Order from "@/models/Order";
 
-// You may need to create a utility function for verification
-async function verifyPayment(tran_id: string, amount: number, currency: string): Promise<boolean> {
-    const store_id = process.env.SSLCOMMERZ_STORE_ID!;
-    const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD!;
-    const isSandbox = true;
+// -----------------------------
+//  VALIDATION FUNCTION (with logs)
+// -----------------------------
+async function validateSSLPayment(val_id: string) {
+  const store_id = process.env.SSLCOMMERZ_STORE_ID!;
+  const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD!;
 
-    // Data for verification
-    const verificationData = {
-        val_id: tran_id, // Note: You often use 'val_id' or 'tran_id' depending on the response
-        store_id,
-        store_passwd,
-        format: 'json'
-    };
+  const url = `https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php?val_id=${encodeURIComponent(
+    val_id
+  )}&store_id=${store_id}&store_passwd=${store_passwd}&v=1&format=json`;
 
-    const endpoint = isSandbox
-        ? "https://sandbox.sslcommerz.com/validator/api/merchantTransIDvalidationAPI.php"
-        : "https://securepay.sslcommerz.com/validator/api/merchantTransIDvalidationAPI.php";
+  console.log("🔍 Validation URL:", url);
 
-    try {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            body: new URLSearchParams(verificationData).toString(),
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        });
+  try {
+    const response = await fetch(url);
+    const json = await response.json();
+    console.log("🔍 SSL Validation Response:", json);
+    return json;
+  } catch (err) {
+    console.error("❌ SSL Validation API Error:", err);
+    return null;
+  }
+}
 
-        const data = await response.json();
-        
-        // 💡 CRITICAL: Check the SSLCommerz validation response status
-        if (data && data.status === 'VALID' || data.status === 'VALIDATED') {
-            // Also check if the amount and currency match your order amount to prevent tampering
-            const validatedAmount = parseFloat(data.amount);
-            
-            if (validatedAmount === amount && data.currency === currency) {
-                console.log(`SSLCommerz Verification SUCCESS for Order ID: ${tran_id}`);
-                return true;
-            }
-        }
-        
-        console.error(`SSLCommerz Verification FAILED for Order ID: ${tran_id}. Reason: ${data?.status}`);
-        return false;
+// -----------------------------
+// SUCCESS HANDLER
+// -----------------------------
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  console.log("========================================");
+  console.log("🔥 SUCCESS API HIT");
+  console.log("Method:", req.method);
+  console.log("Body:", req.body);
+  console.log("Query:", req.query);
+  console.log("========================================");
 
-    } catch (err) {
-        console.error("Error during SSLCommerz verification call:", err);
-        return false;
+  if (req.method !== "POST" && req.method !== "GET") {
+    return res.status(405).send("Method Not Allowed");
+  }
+
+  await dbConnect();
+
+  try {
+    const data = req.method === "POST" ? req.body : req.query;
+
+    console.log("🔍 Incoming SSLCommerz Data:", data);
+
+    const tran_id = data.tran_id as string;
+    const val_id = data.val_id as string;
+
+    console.log("🔍 tran_id:", tran_id);
+    console.log("🔍 val_id:", val_id);
+
+    if (!tran_id || !val_id) {
+      console.log("❌ Missing tran_id or val_id");
+      return res.redirect("/payment/fail");
     }
-} 
 
+    // -----------------------------
+    // FIND ORDER
+    // -----------------------------
+    console.log("🔍 Trying to find order:", tran_id);
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // SSLCommerz typically sends a POST request, but handling GET as well is safer.
-    if (req.method !== "POST" && req.method !== "GET") {
-        return res.status(405).send("Method Not Allowed");
+    const order = await Order.findById(tran_id);
+    console.log("🔍 Found Order:", order);
+
+    if (!order) {
+      console.log("❌ Order not found!");
+      return res.redirect(`/payment/fail?orderId=${tran_id}`);
     }
 
-    await dbConnect();
+    if (order.paymentStatus === "paid") {
+      console.log("ℹ️ Order already marked as paid");
+      return res.redirect(`/payment/success?orderId=${tran_id}`);
+    }
 
-    try {
-        // Use req.body for POST (IPN) and req.query for GET (User Redirect)
-        const paymentData = req.body || req.query; 
-        const orderId = paymentData.tran_id;
+    // -----------------------------
+    // VALIDATE PAYMENT WITH SSLCOMMERZ
+    // -----------------------------
+    console.log("🔍 Sending validation request...");
+    const validation = await validateSSLPayment(val_id);
 
-        if (!orderId) {
-            return res.status(400).send("Missing transaction ID.");
-        }
+    if (!validation) {
+      console.log("❌ Validation API returned null");
+      return res.redirect(`/payment/fail?orderId=${tran_id}`);
+    }
 
-        const order = await Order.findById(orderId);
-        if (!order) {
-            return res.status(404).send("Order not found.");
-        }
+    console.log("🔍 Validation Status:", validation.status);
+    console.log("🔍 Validation Amount:", validation.amount);
 
-        // 1. CHECK IF ALREADY PROCESSED
-        if (order.paymentStatus === 'paid') {
-            // If the order is already marked as paid, we redirect the user immediately
-            return res.redirect(`/payment/success-view?orderId=${orderId}`);
-        }
-        
-        // 2. RUN PAYMENT VERIFICATION
-        const isVerified = await verifyPayment(
-            orderId, 
-            order.total, 
-            "BDT" // Assuming your currency is BDT
-        );
+    if (
+      validation.status !== "VALID" &&
+      validation.status !== "VALIDATED"
+    ) {
+      console.log("❌ Validation status is invalid:", validation.status);
+      return res.redirect(`/payment/fail?orderId=${tran_id}`);
+    }
 
-        if (!isVerified) {
-            // If verification fails, redirect to a failure page
-            console.error(`Unverified/Invalid payment attempt for Order ID: ${orderId}`);
-            return res.redirect(`/payment/fail?orderId=${orderId}`);
-        }
+    // -----------------------------
+    // AMOUNT CHECK
+    // -----------------------------
+    const validatedAmount = parseFloat(validation.amount);
+    console.log("🔍 Comparing amounts:", validatedAmount, order.amount);
 
-        // 3. UPDATE ORDER STATUS (Only if verified)
-        await Order.findByIdAndUpdate(orderId, {
-            paymentStatus: "paid",
-            status: "processing", // Or 'paid', depending on your business logic
-            transactionId: paymentData.bank_tran_id || paymentData.val_id,
-            paymentInfo: paymentData,
-        });
-        
-        // 4. REDIRECT USER TO SUCCESS PAGE
-        return res.redirect(`/payment/success-view?orderId=${orderId}`);
-    } catch (error) {
-        console.error("Payment success processing error:", error);
-        // If a server error occurs, we redirect to a generic failure page
-        return res.redirect("/payment/fail");
-    }
+    if (process.env.NODE_ENV === "production") {
+      if (validatedAmount !== order.total) {
+        console.log("❌ Amount mismatch!");
+        return res.redirect(`/payment/fail?orderId=${tran_id}`);
+      }
+    }
+
+    // -----------------------------
+    // MARK ORDER AS PAID
+    // -----------------------------
+    console.log("✅ Marking order as paid...");
+
+   await Order.findByIdAndUpdate(tran_id, {
+  paymentStatus: "paid",
+  status: "processing",
+  transactionId: validation.tran_id,
+  paymentInfo: validation,
+});
+
+
+    console.log("🎉 Payment Success!");
+
+    return res.redirect(`/payment/success?orderId=${tran_id}`);
+  } catch (err) {
+    console.error("❌ Payment Success Error:", err);
+    return res.redirect("/payment/fail");
+  }
 }
