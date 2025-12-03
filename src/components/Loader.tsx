@@ -8,7 +8,7 @@ interface LoaderProps {
 
 const Loader: React.FC<LoaderProps> = ({ color = "#22c55e", size = 50 }) => {
   return (
-    <div className="flex justify-center items-center py-10">
+    <div className="flex justify-center items-center py-20">
       <svg
         className="animate-spin"
         xmlns="http://www.w3.org/2000/svg"
