@@ -125,8 +125,8 @@ export default function ProductDetail() {
         <div className="flex flex-col justify-between">
           <div>
             <h1 className="text-3xl font-bold">{product.name}</h1>
-            <p className="text-2xl text-green-600 mt-2">
-              ${product.price.toFixed(2)}
+            <p className="text-2xl text-green-600 mt-2 font-mono">
+              ৳{product.price.toFixed(2)}
             </p>
             <p className="mt-4 text-gray-700">{product.description}</p>
 
