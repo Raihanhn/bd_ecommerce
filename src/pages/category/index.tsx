@@ -1,9 +1,10 @@
-// pages/category/index.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/stores/useCartStore";
 import Link from "next/link";
 import RawLoader from "@/components/RawLoader";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type Product = any;
 type Category = { _id: string; name: string; slug: string };
@@ -15,19 +16,30 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
 
   const cartAdd = useCartStore((s) => s.addItem);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/auth/signup");
+  }, [status]);
 
   useEffect(() => {
-    fetchCategories();
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    if (selectedCategory) {
-      fetchProducts(selectedCategory);
-    } else {
+    if (status === "authenticated") {
+      fetchCategories();
       fetchProducts();
     }
-  }, [selectedCategory]);
+  }, [status]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      if (selectedCategory) {
+        fetchProducts(selectedCategory);
+      } else {
+        fetchProducts();
+      }
+    }
+  }, [selectedCategory, status]);
 
   async function fetchCategories() {
     const res = await fetch("/api/categories");
@@ -44,6 +56,14 @@ export default function CategoryPage() {
     const data = await res.json();
     setProducts(data.products || data); // handle different API responses
     setLoading(false);
+  }
+
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <RawLoader />
+      </div>
+    );
   }
 
   return (
@@ -86,47 +106,56 @@ export default function CategoryPage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {products.map((p: Product) => (
             <div key={p._id} className="border rounded-lg overflow-hidden">
-              <Link href={`/products/${p.slug}`}>
-                <div className="w-full h-40">
-                  <img
-                    src={p.images?.[0] || "/default-avatar.png"}
-                    alt={p.name}
-                    className="w-full h-full object-contain block"
-                  />
-                </div>
-              </Link>
+              <div
+                className="w-full h-40 cursor-pointer"
+                onClick={() =>
+                  session ? router.push(`/products/${p.slug}`) : router.push("/auth/signup")
+                }
+              >
+                <img
+                  src={p.images?.[0] || "/default-avatar.png"}
+                  alt={p.name}
+                  className="w-full h-full object-contain block"
+                />
+              </div>
               <div className="p-3">
-                <Link
-                  href={`/products/${p.slug}`}
-                  className="block font-medium"
+                <div
+                  className="block font-medium cursor-pointer"
+                  onClick={() =>
+                    session ? router.push(`/products/${p.slug}`) : router.push("/auth/signup")
+                  }
                 >
                   {p.name}
-                </Link>
+                </div>
                 <div className="text-sm text-green-600 font-mono">
                   ৳{p.price.toFixed(2)}
                 </div>
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() =>
-                      cartAdd({
-                        productId: p._id,
-                        name: p.name,
-                        price: p.price,
-                        qty: 1,
-                        image: p.images?.[0],
-                        slug: p.slug,
-                      })
+                      session
+                        ? cartAdd({
+                            productId: p._id,
+                            name: p.name,
+                            price: p.price,
+                            qty: 1,
+                            image: p.images?.[0],
+                            slug: p.slug,
+                          })
+                        : router.push("/auth/signup")
                     }
                     className="px-3 py-1 bg-green-600 text-white rounded"
                   >
                     Add
                   </button>
-                  <Link
-                    href={`/products/${p.slug}`}
+                  <button
+                    onClick={() =>
+                      session ? router.push(`/products/${p.slug}`) : router.push("/auth/signup")
+                    }
                     className="px-3 py-1 border rounded"
                   >
                     View
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>

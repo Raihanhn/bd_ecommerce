@@ -1,4 +1,3 @@
-// pages/home.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,6 +5,8 @@ import Link from "next/link";
 import { useCartStore } from "@/stores/useCartStore";
 import HeroSlider from "@/components/HeroSlider";
 import RawLoader from "@/components/RawLoader";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation"; // next 13 app router hook
 
 export default function HomePage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -14,6 +15,8 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
 
   const cartAdd = useCartStore((s) => s.addItem);
+  const { data: session } = useSession();
+  const router = useRouter();
 
   // Load 20 products at a time
   async function loadProducts() {
@@ -53,39 +56,53 @@ export default function HomePage() {
     { id: 5, image: "/slider/slide5.png", buttonText: "Start Shopping", buttonLink: "/products" },
   ];
 
+  // Helper for protected navigation
+  const handleProtectedNavigation = (path: string) => {
+    if (!session) router.push("/auth/signup"); // redirect to signup if not logged in
+    else router.push(path);
+  };
+
   return (
-    <div className="mx-auto ">
+    <div className="mx-auto">
       <HeroSlider slides={slides} />
 
       <h1 className="text-3xl font-bold mb-6 mt-10">Featured Products</h1>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-10 p-2 ">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-10 p-2">
         {products.map((p) => (
-          <div key={p._id} className="border rounded-lg overflow-hidde ">
-            <Link href={`/products/${p.slug}`}>
-              <div className="w-full h-40">
-                <img
-                  src={p.images?.[0] || "/default-avatar.png"}
-                  alt={p.name}
-                  className="w-full h-full object-contain block"
-                />
-              </div>
-            </Link>
+          <div key={p._id} className="border rounded-lg overflow-hidde">
+            <div
+              className="w-full h-40 cursor-pointer"
+              onClick={() => handleProtectedNavigation(`/products/${p.slug}`)}
+            >
+              <img
+                src={p.images?.[0] || "/default-avatar.png"}
+                alt={p.name}
+                className="w-full h-full object-contain block"
+              />
+            </div>
             <div className="p-3">
-              <Link href={`/products/${p.slug}`} className="block font-medium">
+              <div
+                className="block font-medium cursor-pointer"
+                onClick={() => handleProtectedNavigation(`/products/${p.slug}`)}
+              >
                 {p.name}
-              </Link>
-              <div className="text-sm text-green-600 font-mono">৳{p.price.toFixed(2)}</div>
+              </div>
+              <div className="text-sm text-green-600 font-mono">
+                ৳{p.price.toFixed(2)}
+              </div>
               <button
                 onClick={() =>
-                  cartAdd({
-                    productId: p._id,
-                    name: p.name,
-                    price: p.price,
-                    qty: 1,
-                    image: p.images?.[0],
-                    slug: p.slug,
-                  })
+                  session
+                    ? cartAdd({
+                        productId: p._id,
+                        name: p.name,
+                        price: p.price,
+                        qty: 1,
+                        image: p.images?.[0],
+                        slug: p.slug,
+                      })
+                    : router.push("/auth/signup")
                 }
                 className="mt-2 px-3 py-1 bg-green-600 text-white rounded w-full cursor-pointer"
               >
@@ -97,7 +114,6 @@ export default function HomePage() {
       </div>
 
       {loading && <RawLoader />}
-
     </div>
   );
 }

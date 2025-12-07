@@ -1,4 +1,3 @@
-//pages/products/index.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,6 +5,8 @@ import Link from "next/link";
 import { useCartStore } from "@/stores/useCartStore";
 import SearchBar from "@/components/SearchBar";
 import RawLoader from "@/components/RawLoader";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation"; // app router
 
 type Product = any;
 
@@ -17,6 +18,13 @@ export default function ProductsPage() {
   const [query, setQuery] = useState("");
 
   const cartAdd = useCartStore((s) => s.addItem);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/auth/signup");
+  }, [status]);
 
   async function fetchProducts(pageNum = 1, searchQuery = "") {
     setLoading(true);
@@ -35,17 +43,26 @@ export default function ProductsPage() {
   }
 
   useEffect(() => {
-    fetchProducts(page, query);
-  }, [page]);
+    if (status === "authenticated") fetchProducts(page, query);
+  }, [page, status]);
 
   function handleSearch(q: string) {
     setQuery(q);
     setPage(1);
-    fetchProducts(1, q);
+    if (status === "authenticated") fetchProducts(1, q);
+  }
+
+  // Show loading while checking auth
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <RawLoader />
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-28 ">
+    <div className="max-w-7xl mx-auto px-4 py-28">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">PRODUCTS</h1>
         <div style={{ width: 360 }}>
@@ -65,36 +82,38 @@ export default function ProductsPage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
               {products.map((p: Product) => (
                 <div key={p._id} className="border rounded-lg overflow-hidden">
-                  <Link href={`/products/${p.slug}`}>
-                    <div className="w-full h-40">
-                      <img
-                        src={p.images?.[0] || "/default-avatar.png"}
-                        alt={p.name}
-                        className="w-full h-full object-contain block"
-                      />
-                    </div>
-                  </Link>
+                  <div
+                    className="w-full h-40 cursor-pointer"
+                    onClick={() => router.push(`/products/${p.slug}`)}
+                  >
+                    <img
+                      src={p.images?.[0] || "/default-avatar.png"}
+                      alt={p.name}
+                      className="w-full h-full object-contain block"
+                    />
+                  </div>
                   <div className="p-3">
-                    <Link
-                      href={`/products/${p.slug}`}
-                      className="block font-medium"
+                    <div
+                      className="block font-medium cursor-pointer"
+                      onClick={() => router.push(`/products/${p.slug}`)}
                     >
                       {p.name}
-                    </Link>
-
+                    </div>
                     <div className="text-sm text-green-600 font-mono">
                       ৳{p.price.toFixed(2)}
                     </div>
                     <button
                       onClick={() =>
-                        cartAdd({
-                          productId: p._id,
-                          name: p.name,
-                          price: p.price,
-                          qty: 1,
-                          image: p.images?.[0],
-                          slug: p.slug,
-                        })
+                        session
+                          ? cartAdd({
+                              productId: p._id,
+                              name: p.name,
+                              price: p.price,
+                              qty: 1,
+                              image: p.images?.[0],
+                              slug: p.slug,
+                            })
+                          : router.push("/auth/signup")
                       }
                       className="mt-2 px-3 py-1 bg-green-600 text-white rounded w-full cursor-pointer"
                     >
