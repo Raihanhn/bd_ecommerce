@@ -29,7 +29,7 @@ export default function LandingPage() {
           width={160}
           height={160}
           className="mb-8 drop-shadow-2xl"
-          unoptimized
+          unoptimized 
         />
 
         <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
@@ -38,7 +38,7 @@ export default function LandingPage() {
           </span>{" "}
           to{" "}
           <span className="bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 inline-block text-transparent bg-clip-text font-bold">
-            ShopVerse
+            AuricMart
           </span>{" "}
           — <br />
           The{" "}
