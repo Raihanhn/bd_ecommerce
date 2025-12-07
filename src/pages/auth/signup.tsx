@@ -133,3 +133,8 @@ export default function SignupPage() {
     </div>
   );
 }
+
+
+
+import { requireAuthOrVisited } from "@/lib/redirectHelpers";
+export const getServerSideProps = requireAuthOrVisited;
