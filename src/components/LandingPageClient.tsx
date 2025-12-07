@@ -71,7 +71,7 @@ export default function LandingPage() {
           <button
             onClick={() => handleClick("/auth/signup")}
             disabled={loadingButton === "/auth/signup"}
-            className="relative bg-gradient-to-r from-blue-500 via-cyan-400 to-teal-400 text-white font-semibold py-3 px-10 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:ring-4 focus:ring-cyan-300 flex items-center justify-center gap-2"
+            className="relative bg-gradient-to-r from-blue-500 cursor-pointer via-cyan-400 to-teal-400 text-white font-semibold py-3 px-10 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:ring-4 focus:ring-cyan-300 flex items-center justify-center gap-2"
           >
             {loadingButton === "/auth/signup" && (
               <span className="absolute inset-0 flex items-center justify-center">
@@ -143,7 +143,7 @@ export default function LandingPage() {
             <button
               onClick={() => handleClick("/auth/signup")}
               disabled={loadingButton === "/auth/signup"}
-              className="relative bg-white text-blue-700 font-semibold py-3 px-10 rounded-full shadow-md hover:bg-gradient-to-r hover:from-white hover:to-blue-100 transition-all duration-300 hover:scale-105 focus:ring-4 focus:ring-blue-300 flex items-center justify-center gap-2"
+              className="relative bg-white text-blue-700 cursor-pointer font-semibold py-3 px-10 rounded-full shadow-md hover:bg-gradient-to-r hover:from-white hover:to-blue-100 transition-all duration-300 hover:scale-105 focus:ring-4 focus:ring-blue-300 flex items-center justify-center gap-2"
             >
               {loadingButton === "/auth/signup" && (
                 <span className="absolute inset-0 flex items-center justify-center">
