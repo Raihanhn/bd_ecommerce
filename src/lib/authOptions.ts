@@ -6,11 +6,11 @@ import bcrypt from "bcryptjs";
 import { dbConnect } from "./db";
 import User from "../models/User";
 
-export const authOptions: NextAuthOptions = {       
+export const authOptions: NextAuthOptions = {
   providers: [
     // Google login
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!, 
+      clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
 
@@ -22,15 +22,32 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("🟡 authorize() called");
+
         if (!credentials?.email || !credentials?.password)
           throw new Error("Missing credentials");
 
+        console.log("❌ Missing credentials");
+
         await dbConnect();
+        console.log("🟢 DB connected");
         const user = await User.findOne({ email: credentials.email });
+
+        console.log("➡ Email entered:", credentials.email);
+        console.log("➡ User found:", user ? "YES" : "NO");
+
         if (!user) throw new Error("No user found");
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) throw new Error("Invalid credentials");
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+        // if (!isValid) throw new Error("Invalid credentials");
+
+        if (!isValid) {
+          console.log("❌ WRONG PASSWORD");
+          throw new Error("Invalid credentials");
+        }
 
         return {
           id: user._id.toString(),

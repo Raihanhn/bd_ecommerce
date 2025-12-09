@@ -1,8 +1,9 @@
 //pages/auth/login.tsx
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import bcrypt from "bcryptjs";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,7 +11,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  bcrypt.compare("minar12345", "$2b$10$VtqfbnvUu1zFa.nxkz/A.OXFcPrXCh4oboyV/xXsyeu7tjkQJq5bq").then(console.log)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => 
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -105,6 +108,13 @@ export default function LoginPage() {
           Continue with Google
         </button>
 
+        <p
+          onClick={() => router.push("/auth/forgot-password")}
+          className="text-right text-sm text-green-600 cursor-pointer hover:underline mt-2"
+        >
+          Forgot Password?
+        </p>
+
         <p className="text-sm text-gray-500 text-center mt-4">
           Don’t have an account?{" "}
           <span
@@ -118,8 +128,6 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
 
 import { requireAuthOrVisited } from "@/lib/redirectHelpers";
 export const getServerSideProps = requireAuthOrVisited;
