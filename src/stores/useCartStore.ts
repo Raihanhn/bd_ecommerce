@@ -16,6 +16,7 @@ interface CartState {
   items: CartItem[];
   addItem: (item: CartItem) => void;
   removeItem: (productId: string) => void;
+  updateQty: (productId: string, qty: number) => void;
   clear: () => void;
   cartCount: number;
 }
@@ -34,9 +35,7 @@ export const useCartStore = create<CartState>()(
 
         if (existing) {
           updated = items.map((i) =>
-            i.productId === item.productId
-              ? { ...i, qty: i.qty + item.qty }
-              : i
+            i.productId === item.productId ? { ...i, qty: i.qty + item.qty } : i
           );
         } else {
           updated = [...items, item];
@@ -50,6 +49,18 @@ export const useCartStore = create<CartState>()(
 
       removeItem: (productId) => {
         const updated = get().items.filter((i) => i.productId !== productId);
+
+        set({
+          items: updated,
+          cartCount: updated.reduce((sum, i) => sum + i.qty, 0),
+        });
+      },
+
+      // 🔥 NEW — Update specific product quantity
+      updateQty: (productId, qty) => {
+        const updated = get().items.map((i) =>
+          i.productId === productId ? { ...i, qty } : i
+        );
 
         set({
           items: updated,

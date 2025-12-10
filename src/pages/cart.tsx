@@ -8,6 +8,7 @@ export default function CartPage() {
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
   const clearCart = useCartStore((s) => s.clear);
+  const updateQty = useCartStore((s) => s.updateQty);
 
   const total = items.reduce((acc, i) => acc + i.price * i.qty, 0);
 
@@ -53,6 +54,7 @@ export default function CartPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-20">
       <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
+
       <div className="space-y-4">
         {items.map((i) => (
           <div
@@ -63,13 +65,35 @@ export default function CartPage() {
               src={i.image || "/default-avatar.png"}
               className="w-20 h-20 object-cover rounded"
             />
+
             <div className="flex-1">
               <h2 className="font-medium">{i.name}</h2>
               <p className="text-sm text-green-600 font-mono">
-                ৳{i.price.toFixed(2)} x {i.qty} = ৳
-                {(i.price * i.qty).toFixed(2)}
+                ৳{i.price.toFixed(2)}
+              </p>
+
+              {/* 🔥 Quantity Buttons */}
+              <div className="flex items-center gap-2 mt-2">
+                <button
+                  onClick={() => updateQty(i.productId, Math.max(1, i.qty - 1))}
+                  className="px-3 py-1 border rounded hover:bg-gray-100"
+                >
+                  -
+                </button>
+                <div className="px-3 font-medium">{i.qty}</div>
+                <button
+                  onClick={() => updateQty(i.productId, i.qty + 1)}
+                  className="px-3 py-1 border rounded hover:bg-gray-100"
+                >
+                  +
+                </button>
+              </div>
+
+              <p className="text-sm mt-2 font-mono">
+                Subtotal: ৳{(i.price * i.qty).toFixed(2)}
               </p>
             </div>
+
             <button
               onClick={() => removeItem(i.productId)}
               className="text-red-600 hover:underline"
@@ -81,9 +105,15 @@ export default function CartPage() {
       </div>
 
       <div className="mt-6 flex justify-between items-center">
-        <h2 className="text-xl font-bold text-green-600 font-mono">Total: ৳{total.toFixed(2)}</h2>
+        <h2 className="text-xl font-bold text-green-600 font-mono">
+          Total: ৳{total.toFixed(2)}
+        </h2>
+
         <div className="flex gap-3">
-          <button onClick={clearCart} className="px-4 py-2 bg-gray-300 rounded">
+          <button
+            onClick={clearCart}
+            className="px-4 py-2 bg-gray-300 rounded"
+          >
             Clear Cart
           </button>
           <Link
