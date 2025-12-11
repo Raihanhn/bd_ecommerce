@@ -25,7 +25,7 @@ export default function LandingPage() {
       <main className="flex flex-col items-center justify-center flex-grow py-20">
         <Image
           src="/logo2.gif"
-          alt="ShopVerse Logo"
+          alt="AuricMart Logo"
           width={160}
           height={160}
           className="mb-8 drop-shadow-2xl"
@@ -166,7 +166,7 @@ export default function LandingPage() {
 
       {/* ===== Footer ===== */}
       <footer className="text-sm text-gray-500 py-6">
-        © {new Date().getFullYear()} ShopVerse. All Rights Reserved.
+        © {new Date().getFullYear()} AuricMart. All Rights Reserved.
       </footer>
     </div>
   );
