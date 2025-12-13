@@ -1,20 +1,47 @@
-// pages/cart.tsx
 "use client";
 
+import { useState } from "react";
 import { useCartStore } from "@/stores/useCartStore";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
   const clearCart = useCartStore((s) => s.clear);
   const updateQty = useCartStore((s) => s.updateQty);
+  const router = useRouter();
+
+  const [shipping, setShipping] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    postcode: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setShipping({ ...shipping, [e.target.name]: e.target.value });
+  };
 
   const total = items.reduce((acc, i) => acc + i.price * i.qty, 0);
 
+  const handleCheckout = () => {
+    // Validate shipping
+    const { name, email, phone, address, city, postcode } = shipping;
+    if (!name || !email || !phone || !address || !city || !postcode) {
+      return alert("Please fill all shipping details.");
+    }
+
+    // Save shipping to localStorage or pass via router
+    localStorage.setItem("shippingAddress", JSON.stringify(shipping));
+    router.push("/checkout");
+  };
+
   if (items.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 ">
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
         <div className="mb-4 text-gray-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -52,76 +79,137 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-20">
-      <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
+    <div className="max-w-6xl mx-auto px-4 py-20">
+      {/* <h1 className="text-3xl font-bold mb-8 text-center">Your Cart</h1> */}
 
-      <div className="space-y-4">
-        {items.map((i) => (
-          <div
-            key={i.productId}
-            className="flex items-center gap-4 border p-3 rounded"
-          >
-            <img
-              src={i.image || "/default-avatar.png"}
-              className="w-20 h-20 object-cover rounded"
-            />
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Cart Items */}
+        <div className="flex-1 space-y-4">
+          {items.map((i) => (
+            <div
+              key={i.productId}
+              className="flex items-center gap-4 border p-3 rounded shadow-sm hover:shadow-md transition-shadow bg-white"
+            >
+              <img
+                src={i.image || "/default-avatar.png"}
+                className="w-20 h-20 object-cover rounded"
+              />
 
-            <div className="flex-1">
-              <h2 className="font-medium">{i.name}</h2>
-              <p className="text-sm text-green-600 font-mono">
-                ৳{i.price.toFixed(2)}
-              </p>
+              <div className="flex-1">
+                <h2 className="font-medium">{i.name}</h2>
+                <p className="text-sm text-green-600 font-mono">
+                  ৳{i.price.toFixed(2)}
+                </p>
 
-              {/* 🔥 Quantity Buttons */}
-              <div className="flex items-center gap-2 mt-2">
-                <button
-                  onClick={() => updateQty(i.productId, Math.max(1, i.qty - 1))}
-                  className="px-3 py-1 border rounded hover:bg-gray-100"
-                >
-                  -
-                </button>
-                <div className="px-3 font-medium">{i.qty}</div>
-                <button
-                  onClick={() => updateQty(i.productId, i.qty + 1)}
-                  className="px-3 py-1 border rounded hover:bg-gray-100"
-                >
-                  +
-                </button>
+                <div className="flex items-center gap-2 mt-2">
+                  <button
+                    onClick={() =>
+                      updateQty(i.productId, Math.max(1, i.qty - 1))
+                    }
+                    className="px-3 py-1 border rounded hover:bg-gray-100"
+                  >
+                    -
+                  </button>
+                  <div className="px-3 font-medium">{i.qty}</div>
+                  <button
+                    onClick={() => updateQty(i.productId, i.qty + 1)}
+                    className="px-3 py-1 border rounded hover:bg-gray-100"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <p className="text-sm mt-2 font-mono">
+                  Subtotal: ৳{(i.price * i.qty).toFixed(2)}
+                </p>
               </div>
 
-              <p className="text-sm mt-2 font-mono">
-                Subtotal: ৳{(i.price * i.qty).toFixed(2)}
-              </p>
+              <button
+                onClick={() => removeItem(i.productId)}
+                className="text-red-600 hover:underline"
+              >
+                Remove
+              </button>
             </div>
+          ))}
 
+          <div className="mt-6 flex justify-between items-center">
+            <h2 className="text-xl font-bold text-green-600 font-mono">
+              Total: ৳{total.toFixed(2)}
+            </h2>
             <button
-              onClick={() => removeItem(i.productId)}
-              className="text-red-600 hover:underline"
+              onClick={clearCart}
+              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
             >
-              Remove
+              Clear Cart
             </button>
           </div>
-        ))}
-      </div>
+        </div>
 
-      <div className="mt-6 flex justify-between items-center">
-        <h2 className="text-xl font-bold text-green-600 font-mono">
-          Total: ৳{total.toFixed(2)}
-        </h2>
+        {/* Shipping Form */}
+        <div className="flex-1 border rounded-xl p-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+            Shipping Details
+          </h2>
 
-        <div className="flex gap-3">
+          <div className="flex flex-col gap-4">
+            <input
+              type="text"
+              name="name"
+              value={shipping.name}
+              onChange={handleChange}
+              placeholder="Full Name"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <input
+              type="email"
+              name="email"
+              value={shipping.email}
+              onChange={handleChange}
+              placeholder="Email"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <input
+              type="text"
+              name="phone"
+              value={shipping.phone}
+              onChange={handleChange}
+              placeholder="Phone Number"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <input
+              type="text"
+              name="address"
+              value={shipping.address}
+              onChange={handleChange}
+              placeholder="Address"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <input
+              type="text"
+              name="city"
+              value={shipping.city}
+              onChange={handleChange}
+              placeholder="City"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <input
+              type="text"
+              name="postcode"
+              value={shipping.postcode}
+              onChange={handleChange}
+              placeholder="Postal Code"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+
           <button
-            onClick={clearCart}
-            className="px-4 py-2 bg-gray-300 rounded"
+            onClick={handleCheckout}
+            disabled={items.length === 0}
+            className="mt-6 w-full py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            Clear Cart
+            Proceed to Checkout
           </button>
-          <Link
-            href="/checkout"
-            className="px-4 py-2 bg-green-600 text-white rounded"
-          >
-            Checkout
-          </Link>
         </div>
       </div>
     </div>
