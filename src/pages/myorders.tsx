@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react"; // optional if you use next-auth
 import Link from "next/link";
 
 interface OrderItem {
@@ -16,13 +15,13 @@ interface Order {
   items: OrderItem[];
   total: number;
   status: string;
-  shippingAddress: {
-    name: string;
-    phone: string;
-    email: string;
-    address: string;
-    city: string;
-    postalCode: string;
+  shippingAddress?: {
+    name?: string;
+    phone?: string;
+    email?: string;
+    address?: string;
+    city?: string;
+    postalCode?: string;
   };
   createdAt: string;
 }
@@ -71,6 +70,7 @@ export default function MyOrdersPage() {
           key={order._id}
           className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
         >
+          {/* Header: Order ID & Status */}
           <div className="flex justify-between mb-2">
             <span className="font-medium text-gray-700">
               Order ID: {order._id}
@@ -88,18 +88,27 @@ export default function MyOrdersPage() {
             </span>
           </div>
 
+          {/* Shipping Info */}
           <div className="mb-2">
             <h2 className="font-semibold text-gray-800">Shipping Info:</h2>
-            <p>{order.shippingAddress.name}</p>
+            <p>{order.shippingAddress?.name || "N/A"}</p>
             <p>
-              {order.shippingAddress.address}, {order.shippingAddress.city} -{" "}
-              {order.shippingAddress.postalCode}
+              {order.shippingAddress
+                ? `${order.shippingAddress.address || "N/A"}, ${
+                    order.shippingAddress.city || "N/A"
+                  } - ${order.shippingAddress.postalCode || "N/A"}`
+                : "N/A"}
             </p>
             <p>
-              {order.shippingAddress.phone} ({order.shippingAddress.email})
+              {order.shippingAddress
+                ? `${order.shippingAddress.phone || "N/A"} (${
+                    order.shippingAddress.email || "N/A"
+                  })`
+                : "N/A"}
             </p>
           </div>
 
+          {/* Items List */}
           <div>
             <h2 className="font-semibold text-gray-800">Items:</h2>
             {order.items.map((item, idx) => (
@@ -107,17 +116,21 @@ export default function MyOrdersPage() {
                 key={idx}
                 className="flex justify-between border-b py-1 text-sm"
               >
-                <span>{item.name} x {item.qty}</span>
+                <span>
+                  {item.name} x {item.qty}
+                </span>
                 <span>৳{(item.price * item.qty).toFixed(2)}</span>
               </div>
             ))}
           </div>
 
+          {/* Total */}
           <div className="mt-2 flex justify-between font-bold text-gray-800">
             <span>Total:</span>
             <span>৳{order.total.toFixed(2)}</span>
           </div>
 
+          {/* Order Date */}
           <div className="mt-2 text-right text-xs text-gray-500">
             Ordered on: {new Date(order.createdAt).toLocaleString()}
           </div>
