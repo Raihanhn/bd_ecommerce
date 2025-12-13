@@ -3,7 +3,7 @@ import mongoose, { Schema, models } from "mongoose";
 
 const orderSchema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: "User" }, // user may be guest or logged in
+    user: { type: Schema.Types.ObjectId, ref: "User", required: false }, // user may be guest or logged in
 
     items: [
       {
