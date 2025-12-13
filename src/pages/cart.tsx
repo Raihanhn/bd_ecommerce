@@ -106,14 +106,14 @@ export default function CartPage() {
                     onClick={() =>
                       updateQty(i.productId, Math.max(1, i.qty - 1))
                     }
-                    className="px-3 py-1 border rounded hover:bg-gray-100"
+                    className="px-3 py-1 border rounded hover:bg-gray-100 cursor-pointer "
                   >
                     -
                   </button>
                   <div className="px-3 font-medium">{i.qty}</div>
                   <button
                     onClick={() => updateQty(i.productId, i.qty + 1)}
-                    className="px-3 py-1 border rounded hover:bg-gray-100"
+                    className="px-3 py-1 border rounded hover:bg-gray-100 cursor-pointer "
                   >
                     +
                   </button>
@@ -126,7 +126,7 @@ export default function CartPage() {
 
               <button
                 onClick={() => removeItem(i.productId)}
-                className="text-red-600 hover:underline"
+                className="text-red-600 hover:underline cursor-pointer"
               >
                 Remove
               </button>
@@ -139,7 +139,7 @@ export default function CartPage() {
             </h2>
             <button
               onClick={clearCart}
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              className="px-4 py-2 bg-gray-300 cursor-pointer rounded hover:bg-gray-400"
             >
               Clear Cart
             </button>
@@ -206,7 +206,7 @@ export default function CartPage() {
           <button
             onClick={handleCheckout}
             disabled={items.length === 0}
-            className="mt-6 w-full py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="mt-6 w-full py-3 cursor-pointer bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Proceed to Checkout
           </button>

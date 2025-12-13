@@ -21,7 +21,7 @@ export default function PaymentSuccessPage() {
       )}
       <div className="mt-6 flex flex-col gap-3">
         <button
-          onClick={() => router.push("/orders")}
+          onClick={() => router.push("/myorders")}
           className="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
         >
           View My Orders

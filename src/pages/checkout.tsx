@@ -1,28 +1,39 @@
-// pages/checkout.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/stores/useCartStore";
 import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
   const [method, setMethod] = useState<"ssl" | "cod" | null>(null);
-  const dummyShippingAddress = {
-    name: "Guest User",
-    email: "guest@example.com",
-    phone: "01XXXXXXXXX",
-    address: "123 Test St, Gulshan",
-    city: "Dhaka",
-    postcode: "1212",
-  };
+  const [shipping, setShipping] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    postcode: "",
+  });
 
-  const router = useRouter();
   const items = useCartStore((s) => s.items);
   const total = items.reduce((acc, i) => acc + i.price * i.qty, 0);
   const clearCart = useCartStore((s) => s.clear);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Get shipping from localStorage
+    const savedShipping = localStorage.getItem("shippingAddress");
+    if (savedShipping) setShipping(JSON.parse(savedShipping));
+  }, []);
 
   const handleConfirm = async () => {
     if (!method) return alert("Please choose a payment method.");
+
+    // Validate shipping
+    const { name, email, phone, address, city, postcode } = shipping;
+    if (!name || !email || !phone || !address || !city || !postcode) {
+      return alert("Shipping information is incomplete.");
+    }
 
     if (method === "cod") {
       const orderId = "ORDER-" + Date.now();
@@ -33,7 +44,7 @@ export default function CheckoutPage() {
           items,
           amount: total,
           orderId,
-          shippingAddress: dummyShippingAddress,
+          shippingAddress: shipping,
         }),
       });
 
@@ -56,7 +67,7 @@ export default function CheckoutPage() {
           items,
           amount: total,
           user: null,
-          shippingAddress: dummyShippingAddress,
+          shippingAddress: shipping,
         }),
       });
 
@@ -79,23 +90,23 @@ export default function CheckoutPage() {
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Shipping Info */}
-        <div className="flex-1 border rounded-xl p-6 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div className="flex-1 border rounded-xl p-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
           <h2 className="text-2xl font-semibold mb-4 text-gray-700">
             Shipping Details
           </h2>
           <p className="mb-2">
-            <span className="font-medium">Name:</span> {dummyShippingAddress.name}
+            <span className="font-medium">Name:</span> {shipping.name}
           </p>
           <p className="mb-2">
-            <span className="font-medium">Address:</span> {dummyShippingAddress.address}, {dummyShippingAddress.city} - {dummyShippingAddress.postcode}
+            <span className="font-medium">Address:</span> {shipping.address}, {shipping.city} - {shipping.postcode}
           </p>
           <p className="mb-2">
-            <span className="font-medium">Contact:</span> {dummyShippingAddress.phone} ({dummyShippingAddress.email})
+            <span className="font-medium">Contact:</span> {shipping.phone} ({shipping.email})
           </p>
         </div>
 
         {/* Payment Method */}
-        <div className="flex-1 border rounded-xl p-6 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div className="flex-1 border rounded-xl p-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
           <h2 className="text-2xl font-semibold mb-4 text-gray-700">
             Payment Method
           </h2>
@@ -109,11 +120,7 @@ export default function CheckoutPage() {
                 className="w-5 h-5"
               />
               <span className="text-gray-800 font-medium">
-                Pay Online (
-                <span className="text-green-600 font-bold">
-                  BDT {total.toFixed(2)}
-                </span>
-                )
+                Pay Online (<span className="text-green-600 font-bold">BDT {total.toFixed(2)}</span>)
               </span>
             </label>
 
@@ -126,11 +133,7 @@ export default function CheckoutPage() {
                 className="w-5 h-5"
               />
               <span className="text-gray-800 font-medium">
-                Cash on Delivery (
-                <span className="text-blue-600 font-bold">
-                  BDT {total.toFixed(2)}
-                </span>
-                )
+                Cash on Delivery (<span className="text-blue-600 font-bold">BDT {total.toFixed(2)}</span>)
               </span>
             </label>
           </div>
