@@ -128,6 +128,13 @@ export default function Navbar() {
                     >
                       Profile
                     </Link>
+                    <Link
+                      href="/myorders"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      My Orders
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
@@ -194,6 +201,13 @@ export default function Navbar() {
                     className="block py-2"
                   >
                     Profile
+                  </Link>
+                    <Link
+                    href="/myorders"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-2"
+                  >
+                    My Orders
                   </Link>
                   <button
                     onClick={handleLogout}
