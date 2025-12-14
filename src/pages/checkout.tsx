@@ -143,7 +143,7 @@ export default function CheckoutPage() {
       <button
         onClick={handleConfirm}
         disabled={total === 0 || !method}
-        className="mt-10 w-full lg:w-1/3 mx-auto block py-4 bg-green-600 text-white rounded-xl text-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+        className="mt-10 w-full lg:w-1/3 mx-auto block py-4 bg-green-600 text-white rounded-xl text-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 cursor-pointer"
       >
         Confirm Order
       </button>

@@ -46,11 +46,11 @@ export default function MyOrdersPage() {
   }, []);
 
   if (loading)
-    return <div className="p-6 text-center text-gray-500">Loading orders...</div>;
+    return <div className="p-6 py-20 text-center text-gray-500 ">Loading orders...</div>;
 
   if (orders.length === 0)
     return (
-      <div className="p-6 text-center">
+      <div className="text-center py-20">
         <h1 className="text-2xl font-bold mb-4">You have no orders yet.</h1>
         <Link
           href="/products"
@@ -62,7 +62,7 @@ export default function MyOrdersPage() {
     );
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
+    <div className="p-6 max-w-5xl mx-auto space-y-6 py-20">
       <h1 className="text-3xl font-bold mb-6 text-center">My Orders</h1>
 
       {orders.map((order) => (
