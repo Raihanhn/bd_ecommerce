@@ -55,27 +55,34 @@ export default function OrdersPage() {
         <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-md p-6">
           <h1 className="text-2xl font-semibold mb-6">Orders</h1>
 
-          <table className="w-full border text-sm">
-            <thead className="bg-gray-100">
+          <table className="w-full border-collapse text-sm">
+            <thead className="bg-gray-100 text-gray-700">
               <tr>
-                <th className="border p-2">SL</th>
-                <th className="border p-2">Order ID</th>
-                <th className="border p-2">User</th>
-                <th className="border p-2">Shipping Address</th>
-                <th className="border p-2">Total</th>
-                <th className="border p-2">Status</th>
-                <th className="border p-2">Actions</th>
+                <th className="border px-3 py-2 text-center w-12">#</th>
+                <th className="border px-3 py-2">Order ID</th>
+                <th className="border px-3 py-2">Customer</th>
+                <th className="border px-3 py-2">Shipping</th>
+                <th className="border px-3 py-2 text-right">Total</th>
+                <th className="border px-3 py-2 text-center">Status</th>
+                <th className="border px-3 py-2 text-center w-16">Action</th>
               </tr>
             </thead>
+
             <tbody>
               {orders.map((o, index) => (
-                <tr key={o._id}>
-                  <td className="border p-2 text-center">{index + 1}</td>
-                  <td className="border p-2">{o._id}</td>
-                  {/* <td className="border p-2">
-                    {o.user?.name || "Guest"}
-                  </td> */}
-                  <td className="border p-2">
+                <tr key={o._id} className="hover:bg-gray-50 transition">
+                  {/* SL */}
+                  <td className="border px-3 py-2 text-center text-gray-600">
+                    {index + 1}
+                  </td>
+
+                  {/* Order ID */}
+                  <td className="border px-3 py-2 font-mono text-xs text-gray-700">
+                    {o._id.slice(-8)}
+                  </td>
+
+                  {/* Customer */}
+                  <td className="border px-3 py-2">
                     <div className="font-medium text-gray-800">
                       {o.shippingAddress?.name || o.user?.name || "N/A"}
                     </div>
@@ -83,21 +90,29 @@ export default function OrdersPage() {
                       {o.shippingAddress?.phone}
                     </div>
                   </td>
-                  <td className="border p-2 text-xs leading-relaxed">
-                    {o.shippingAddress?.address}
-                    <br />
-                    {o.shippingAddress?.city} - {o.shippingAddress?.postcode}
+
+                  {/* Shipping */}
+                  <td className="border px-3 py-2 text-xs text-gray-600 max-w-[260px]">
+                    <div className="truncate">{o.shippingAddress?.address}</div>
+                    <div className="text-gray-500">
+                      {o.shippingAddress?.city} – {o.shippingAddress?.postcode}
+                    </div>
                   </td>
 
-                  <td className="border p-2">৳{o.total}</td>
-                  <td className="border p-2">
+                  {/* Total */}
+                  <td className="border px-3 py-2 text-right font-semibold">
+                    ৳{o.total.toFixed(2)}
+                  </td>
+
+                  {/* Status */}
+                  <td className="border px-3 py-2 text-center">
                     <select
                       value={o.status}
                       disabled={updatingId === o._id}
                       onChange={(e) =>
                         handleStatusChange(o._id, e.target.value)
                       }
-                      className="border p-1 rounded cursor-pointer"
+                      className="border rounded px-2 py-1 text-xs bg-white cursor-pointer"
                     >
                       {STATUSES.map((s) => (
                         <option key={s} value={s}>
@@ -106,13 +121,15 @@ export default function OrdersPage() {
                       ))}
                     </select>
                   </td>
-                  <td className="border p-2 space-x-3">
+
+                  {/* Action */}
+                  <td className="border px-3 py-2 text-center">
                     <button
                       onClick={() => handleDelete(o._id)}
                       title="Delete Order"
-                      className="text-red-600 hover:text-red-800 transition cursor-pointer"
+                      className="text-red-600 hover:text-red-800 transition"
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={16} />
                     </button>
                   </td>
                 </tr>
