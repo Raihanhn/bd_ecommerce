@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import AdminGuard from "@/components/AdminGuard";
 import axios from "axios";
+import { Trash2 } from "lucide-react";
+
 
 const STATUSES = [
         "pending",
@@ -81,7 +83,7 @@ export default function OrdersPage() {
                       onChange={(e) =>
                         handleStatusChange(o._id, e.target.value)
                       }
-                      className="border p-1 rounded"
+                      className="border p-1 rounded cursor-pointer"
                     >
                       {STATUSES.map((s) => (
                         <option key={s} value={s}>
@@ -92,11 +94,13 @@ export default function OrdersPage() {
                   </td>
                   <td className="border p-2 space-x-3">
                     <button
-                      onClick={() => handleDelete(o._id)}
-                      className="text-red-600 hover:underline"
-                    >
-                      Delete
-                    </button>
+  onClick={() => handleDelete(o._id)}
+  title="Delete Order"
+  className="text-red-600 hover:text-red-800 transition cursor-pointer"
+>
+  <Trash2 size={18} />
+</button>
+
                   </td>
                 </tr>
               ))}
