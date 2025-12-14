@@ -5,20 +5,19 @@ import AdminGuard from "@/components/AdminGuard";
 import axios from "axios";
 import { Trash2 } from "lucide-react";
 
-
 const STATUSES = [
-        "pending",
-        "processing",
-        "packaging",
-        "shipped",
-        "delivered",
-        "cancelled",
-      ];
+  "pending",
+  "processing",
+  "packaging",
+  "shipped",
+  "delivered",
+  "cancelled",
+];
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   const fetchOrders = async () => {
     const res = await axios.get("/api/admin/orders");
@@ -72,8 +71,16 @@ export default function OrdersPage() {
                 <tr key={o._id}>
                   <td className="border p-2 text-center">{index + 1}</td>
                   <td className="border p-2">{o._id}</td>
-                  <td className="border p-2">
+                  {/* <td className="border p-2">
                     {o.user?.name || "Guest"}
+                  </td> */}
+                  <td className="border p-2">
+                    <div className="font-medium text-gray-800">
+                      {o.shippingAddress?.name || o.user?.name || "N/A"}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {o.shippingAddress?.phone}
+                    </div>
                   </td>
                   <td className="border p-2">৳{o.total}</td>
                   <td className="border p-2">
@@ -94,13 +101,12 @@ export default function OrdersPage() {
                   </td>
                   <td className="border p-2 space-x-3">
                     <button
-  onClick={() => handleDelete(o._id)}
-  title="Delete Order"
-  className="text-red-600 hover:text-red-800 transition cursor-pointer"
->
-  <Trash2 size={18} />
-</button>
-
+                      onClick={() => handleDelete(o._id)}
+                      title="Delete Order"
+                      className="text-red-600 hover:text-red-800 transition cursor-pointer"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </td>
                 </tr>
               ))}
