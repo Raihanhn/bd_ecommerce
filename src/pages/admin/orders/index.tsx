@@ -61,6 +61,7 @@ export default function OrdersPage() {
                 <th className="border p-2">SL</th>
                 <th className="border p-2">Order ID</th>
                 <th className="border p-2">User</th>
+                <th className="border p-2">Shipping Address</th>
                 <th className="border p-2">Total</th>
                 <th className="border p-2">Status</th>
                 <th className="border p-2">Actions</th>
@@ -82,6 +83,12 @@ export default function OrdersPage() {
                       {o.shippingAddress?.phone}
                     </div>
                   </td>
+                  <td className="border p-2 text-xs leading-relaxed">
+                    {o.shippingAddress?.address}
+                    <br />
+                    {o.shippingAddress?.city} - {o.shippingAddress?.postcode}
+                  </td>
+
                   <td className="border p-2">৳{o.total}</td>
                   <td className="border p-2">
                     <select
